@@ -5,26 +5,20 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="root" xmlns="http://javafx.com/javafx/8.0.171"
-            fx:controller="ru.itis.snaky.client.controllers.GameWindowController">
-    <children>
-        <ButtonBar AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-            <buttons>
-                <Button mnemonicParsing="false" text="Start"/>
-                <Button mnemonicParsing="false" text="Exit"/>
-            </buttons>
-        </ButtonBar>
-        <Pane id="canvasPane" layoutX="85.0" layoutY="85.0" minHeight="350.0" minWidth="350.0" prefHeight="200.0"
-              prefWidth="200.0" styleClass="canvasPane"
-
-              AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-            <children>
-                <Canvas id="canvas" height="350.0" width="350.0"/>
-            </children>
-        </Pane>
-    </children>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="root" fx:id="anchorPane" xmlns="http://javafx.com/javafx/8.0.171">
     <stylesheets>
         <URL value="@/css/main.css"/>
         <URL value="@/css/GameWindow.css"/>
     </stylesheets>
+    <ButtonBar AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <buttons>
+            <Button fx:id="startButton" mnemonicParsing="false" text="Start"/>
+            <Button fx:id="exitButton" mnemonicParsing="false" text="Exit"/>
+        </buttons>
+    </ButtonBar>
+    <Pane id="canvasPane" layoutX="85.0" layoutY="85.0" minHeight="350.0" minWidth="350.0" prefHeight="200.0"
+          prefWidth="200.0" styleClass="canvasPane" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
+          AnchorPane.topAnchor="10.0">
+        <Canvas id="canvas" fx:id="canvas" height="350.0" width="350.0"/>
+    </Pane>
 </AnchorPane>

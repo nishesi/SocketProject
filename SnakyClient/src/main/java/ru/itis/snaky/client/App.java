@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import ru.itis.snaky.client.controllers.AuthenticationWindowController;
-import ru.itis.snaky.client.controllers.GameWindowController;
 import ru.itis.snaky.client.controllers.RoomsWindowController;
 
 public class App extends Application {
@@ -29,16 +28,11 @@ public class App extends Application {
         AnchorPane roomsWindow = loader.load(App.class.getResourceAsStream("/layout/RoomsWindow.fxml"));
         RoomsWindowController roomsWindowController = loader.getController();
 
-        loader = new FXMLLoader();
-        AnchorPane gameWindow = loader.load(App.class.getResourceAsStream("/layout/GameWindow.fxml"));
-        GameWindowController gameWindowController = loader.getController();
-
         authenticationWindowController.setAuthenticationWindow(authenticationWindow);
         authenticationWindowController.setRoomsWindowController(roomsWindowController);
 
         roomsWindowController.setRoomsWindow(roomsWindow);
 
-        gameWindowController.setGameWindow(gameWindow);
 
         return authenticationWindow;
     }

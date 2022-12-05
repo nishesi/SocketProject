@@ -28,11 +28,27 @@ public class AuthenticationWindowController {
     private Button enterButton;
 
     @FXML
-    void send(ActionEvent event) {
-        List<Room> rooms = List.of(new Room("room 1"), new Room("room 2"), new Room("room 3"));
+    void send() {
+        List<Room> rooms = List.of(new Room("room 1", 10),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 2", 15),
+                new Room("room 3", 5));
+
+        roomsWindowController.setRoomList(rooms);
         Stage stage = (Stage) enterButton.getScene().getWindow();
         stage.setScene(new Scene(roomsWindowController.getRoomsWindow()));
-        stage.show();
     }
 
 }
