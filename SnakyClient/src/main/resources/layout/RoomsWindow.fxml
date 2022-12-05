@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import java.net.URL?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="root" xmlns="http://javafx.com/javafx/8.0.171"
+            fx:controller="ru.itis.snaky.client.controllers.RoomsWindowController">
+    <children>
+        <ListView layoutX="236.0" layoutY="85.0" prefHeight="200.0" prefWidth="128.0"
+                  style="-fx-border-radius: 10%; -fx-background-color: #5D9400;"/>
+    </children>
 
-
-<AnchorPane id="root" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.itis.snaky.client.controllers.RoomsWindow">
-   <children>
-      <ListView layoutX="236.0" layoutY="85.0" prefHeight="200.0" prefWidth="128.0" style="-fx-border-radius: 10%; -fx-background-color: #5D9400;" />
-   </children>
+    <stylesheets>
+        <URL value="@/css/main.css"/>
+    </stylesheets>
 </AnchorPane>

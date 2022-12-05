@@ -1,18 +1,12 @@
 #root {
     -fx-background-image: url("../images/background.jpg");
     -fx-background-size: 100%;
-    -fx-font-family: Arial;
-    -fx-font: bold;
     -fx-text-alignment: center;
-    -fx-pref-height: 370;
-    -fx-pref-width: 600;
+    -fx-min-height: 370;
+    -fx-min-width: 600;
 }
 
-#authenticationPage {
-    -fx-text-fill: write;
-
-}
-
-#enterButton {
+.button {
     -fx-background-color: #5D9400;
+    -fx-text-fill: white;
 }
