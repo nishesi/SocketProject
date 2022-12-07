@@ -1,11 +1,10 @@
 package ru.itis.snaky.client.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,7 @@ import java.util.List;
 public class AuthenticationWindowController {
     @Getter
     @Setter
-    private AnchorPane authenticationWindow;
+    private Pane authenticationWindow;
 
     @Setter
     private RoomsWindowController roomsWindowController;

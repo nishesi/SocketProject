@@ -1,0 +1,7 @@
+#rooms-list {
+    -fx-border-radius: 10%;
+    /*-fx-background-color: black;*/
+    -fx-background-color: #5D9400;
+    -fx-max-width: 700;
+    -fx-max-height: 700;
+}

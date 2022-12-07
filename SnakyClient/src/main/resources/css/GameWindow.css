@@ -1,5 +1,11 @@
-.canvasPane {
+#canvas-pane {
     -fx-border-width: 5;
     -fx-border-color: #5D9400;
     -fx-border-radius: 5;
+    -fx-min-height: 350;
+    -fx-min-width: 350;
+}
+
+#right-bar {
+    -fx-padding: 20;
 }

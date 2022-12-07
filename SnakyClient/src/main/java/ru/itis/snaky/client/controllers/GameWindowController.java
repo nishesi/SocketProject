@@ -4,13 +4,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
 public class GameWindowController {
     @FXML
-    private AnchorPane anchorPane;
+    private final Pane gameWindow;
     @FXML
     private Button startButton;
     @FXML
@@ -22,13 +22,15 @@ public class GameWindowController {
         FXMLLoader fxmlLoader = new FXMLLoader(RoomsWindowController.class.getResource("/layout/GameWindow.fxml"));
         fxmlLoader.setController(this);
         try {
-            fxmlLoader.load();
+            gameWindow = fxmlLoader.load();
+            gameWindow.getStylesheets().add("/css/main.css");
+            gameWindow.getStylesheets().add("/css/GameWindow.css");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public AnchorPane getAnchorPane() {
-        return anchorPane;
+    public Pane getGameWindow() {
+        return gameWindow;
     }
 }

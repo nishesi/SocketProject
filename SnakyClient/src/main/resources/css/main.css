@@ -1,12 +1,14 @@
 #root {
     -fx-background-image: url("../images/background.jpg");
     -fx-background-size: 100%;
-    -fx-text-alignment: center;
-    -fx-min-height: 370;
-    -fx-min-width: 600;
+    -fx-pref-height: 370;
+    -fx-pref-width: 600;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
 }
 
 .button {
     -fx-background-color: #5D9400;
+    -fx-font-size: 14;
     -fx-text-fill: white;
 }

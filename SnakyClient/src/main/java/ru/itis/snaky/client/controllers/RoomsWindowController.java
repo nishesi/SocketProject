@@ -6,7 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,18 +20,18 @@ import java.util.ResourceBundle;
 public class RoomsWindowController implements Initializable {
     @Getter
     @Setter
-    private AnchorPane roomsWindow;
+    private Pane roomsWindow;
 
     @FXML
-    private ListView<Room> listView;
+    private ListView<Room> roomsListView;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
     public void setRoomList(List<Room> roomList) {
-        listView.setItems(FXCollections.observableList(roomList));
-        listView.setCellFactory(roomListView -> new ListCell<>() {
+        roomsListView.setItems(FXCollections.observableList(roomList));
+        roomsListView.setCellFactory(roomListView -> new ListCell<>() {
             @Override
             protected void updateItem(Room room, boolean empty) {
                 super.updateItem(room, empty);
@@ -50,14 +50,14 @@ public class RoomsWindowController implements Initializable {
 
     @FXML
     public void roomChosen() {
-        Room room = listView.getSelectionModel().getSelectedItem();
+        Room room = roomsListView.getSelectionModel().getSelectedItem();
 
-        Stage stage = (Stage) listView.getScene().getWindow();
+        Stage stage = (Stage) roomsListView.getScene().getWindow();
         stage.setScene(new Scene(loadGameWindow()));
     }
 
-    private AnchorPane loadGameWindow() {
+    private Pane loadGameWindow() {
         GameWindowController gameWindowController = new GameWindowController();
-        return gameWindowController.getAnchorPane();
+        return gameWindowController.getGameWindow();
     }
 }
