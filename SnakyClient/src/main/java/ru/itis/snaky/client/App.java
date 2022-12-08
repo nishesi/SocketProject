@@ -29,13 +29,14 @@ public class App extends Application {
         loader = new FXMLLoader();
         Pane roomsWindow = loader.load(App.class.getResourceAsStream("/layout/RoomsWindow.fxml"));
         RoomsWindowController roomsWindowController = loader.getController();
+        roomsWindowController.setAuthenticationWindowController(authenticationWindowController);
         roomsWindow.getStylesheets().add("/css/main.css");
         roomsWindow.getStylesheets().add("/css/RoomsWindow.css");
 
-        authenticationWindowController.setAuthenticationWindow(authenticationWindow);
+        authenticationWindowController.setAuthenticationPane(authenticationWindow);
         authenticationWindowController.setRoomsWindowController(roomsWindowController);
 
-        roomsWindowController.setRoomsWindow(roomsWindow);
+        roomsWindowController.setRoomsPane(roomsWindow);
 
 
         return authenticationWindow;

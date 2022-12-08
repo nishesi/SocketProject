@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane id="root" fx:id="anchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane id="root" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <Pane id="canvas-pane">
             <Canvas id="canvas" fx:id="canvas" height="350.0" width="350.0"/>
@@ -21,7 +21,7 @@
             <ButtonBar id="button-bar">
                 <buttons>
                     <Button fx:id="startButton" mnemonicParsing="false" text="Start"/>
-                    <Button fx:id="exitButton" mnemonicParsing="false" text="Exit"/>
+                    <Button fx:id="exitButton" onAction="#toRooms" mnemonicParsing="false" text="Exit"/>
                 </buttons>
             </ButtonBar>
         </VBox>

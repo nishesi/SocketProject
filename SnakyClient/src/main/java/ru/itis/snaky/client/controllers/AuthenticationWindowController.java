@@ -15,7 +15,7 @@ import java.util.List;
 public class AuthenticationWindowController {
     @Getter
     @Setter
-    private Pane authenticationWindow;
+    private Pane authenticationPane;
 
     @Setter
     private RoomsWindowController roomsWindowController;
@@ -47,7 +47,7 @@ public class AuthenticationWindowController {
 
         roomsWindowController.setRoomList(rooms);
         Stage stage = (Stage) enterButton.getScene().getWindow();
-        stage.setScene(new Scene(roomsWindowController.getRoomsWindow()));
+        stage.setScene(new Scene(roomsWindowController.getRoomsPane()));
     }
 
 }

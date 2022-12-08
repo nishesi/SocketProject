@@ -1,9 +1,11 @@
 package ru.itis.snaky.client.controllers;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
@@ -18,10 +20,15 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class RoomsWindowController implements Initializable {
+    @Setter
+    private AuthenticationWindowController authenticationWindowController;
+
     @Getter
     @Setter
-    private Pane roomsWindow;
+    private Pane roomsPane;
 
+    @FXML
+    public Button backButton;
     @FXML
     private ListView<Room> roomsListView;
 
@@ -57,7 +64,12 @@ public class RoomsWindowController implements Initializable {
     }
 
     private Pane loadGameWindow() {
-        GameWindowController gameWindowController = new GameWindowController();
-        return gameWindowController.getGameWindow();
+        GameWindowController gameWindowController = new GameWindowController(this);
+        return gameWindowController.getGamePane();
+    }
+
+    public void toAuthWindow(ActionEvent actionEvent) {
+        Stage stage = (Stage) backButton.getScene().getWindow();
+        stage.setScene(authenticationWindowController.getAuthenticationPane().getScene());
     }
 }
