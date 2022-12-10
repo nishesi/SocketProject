@@ -40,6 +40,9 @@ public class OutputStreamThread extends Thread {
     }
 
     public void send(Message message) {
+        if (isRunning) {
+            throw new RuntimeException("Thread finished");
+        }
         synchronized (messageQueue) {
             messageQueue.add(message);
         }

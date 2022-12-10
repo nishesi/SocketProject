@@ -4,15 +4,18 @@ import ru.itis.snaky.protocol.Message;
 import ru.itis.snaky.protocol.ProtocolInputStream;
 
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
 
 public class InputStreamThread extends Thread {
-    private final ResponseHandler responseHandler;
     private final ProtocolInputStream protocolInputStream;
+    private final Queue<Message> messages;
     private boolean isRunning;
 
-    public InputStreamThread(InputStream inputStream, ResponseHandler responseHandler) {
+    public InputStreamThread(InputStream inputStream) {
         this.protocolInputStream = new ProtocolInputStream(inputStream);
-        this.responseHandler = responseHandler;
+        this.messages = new LinkedList<>();
         this.isRunning = true;
     }
 
@@ -20,7 +23,18 @@ public class InputStreamThread extends Thread {
     public void run() {
         while (isRunning) {
             Message message = protocolInputStream.readMessage();
-            responseHandler.handle(message);
+            synchronized (messages) {
+                messages.add(message);
+            }
+        }
+    }
+
+    public Optional<Message> getMessage() {
+        if (!isRunning) {
+            throw new RuntimeException("Thread finished");
+        }
+        synchronized (messages) {
+            return Optional.ofNullable(messages.poll());
         }
     }
 

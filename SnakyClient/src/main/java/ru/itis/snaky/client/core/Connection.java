@@ -12,25 +12,30 @@ import java.net.Socket;
 
 public class Connection extends Thread {
     @Getter
-    private final ResponseHandler responseHandler;
     private final InputStreamThread inputStreamThread;
-    private final OutputStreamThread outputStreamThread;
     @Getter
-    private final ControlService controlService;
+    private final OutputStreamThread outputStreamThread;
     private final Socket socket;
 
     public Connection(InetAddress inetAddress, short port) {
         try {
             this.socket = new Socket(inetAddress, port);
-            this.responseHandler = new ResponseHandler();
-            this.inputStreamThread = new InputStreamThread(socket.getInputStream(), responseHandler);
-
+            this.inputStreamThread = new InputStreamThread(socket.getInputStream());
             this.outputStreamThread = new OutputStreamThread(socket.getOutputStream());
-            this.controlService = new ControlService(outputStreamThread);
 
             this.inputStreamThread.start();
             this.outputStreamThread.start();
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void close() {
+        inputStreamThread.finish();
+        outputStreamThread.finish();
+        try {
+            socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
