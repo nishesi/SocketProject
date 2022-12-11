@@ -17,7 +17,7 @@ import lombok.Setter;
 import ru.itis.snaky.client.dto.Room;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseHandler;
-import ru.itis.snaky.client.controllers.components.RoomController;
+import ru.itis.snaky.client.controllers.components.RoomViewController;
 
 import java.net.URL;
 import java.util.List;
@@ -44,6 +44,7 @@ public class RoomsWindowController implements Initializable {
 
     @FXML
     public void updateRooms() {
+
         Task<Void> rooms = new Task<>() {
             @Override
             protected Void call() {
@@ -79,6 +80,7 @@ public class RoomsWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         roomsListView.setCellFactory(roomListView -> new ListCell<>() {
             @Override
             protected void updateItem(Room room, boolean empty) {
@@ -88,9 +90,9 @@ public class RoomsWindowController implements Initializable {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    RoomController roomController = new RoomController(room);
+                    RoomViewController roomViewController = new RoomViewController(room);
 
-                    setGraphic(roomController.getView());
+                    setGraphic(roomViewController.getView());
                 }
             }
         });

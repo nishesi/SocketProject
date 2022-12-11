@@ -7,11 +7,16 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ru.itis.snaky.client.controllers.AuthenticationWindowController;
 import ru.itis.snaky.client.controllers.RoomsWindowController;
+import ru.itis.snaky.client.core.Connection;
+
+import java.net.InetAddress;
 
 public class App extends Application {
+    private Connection connection;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        connection = new Connection(InetAddress.getLocalHost(), (short) 80);
         Pane authenticationWindow = initContext();
 
         primaryStage.setScene(new Scene(authenticationWindow));
@@ -21,6 +26,7 @@ public class App extends Application {
 
     private Pane initContext() throws Exception {
         FXMLLoader loader = new FXMLLoader();
+
         Pane authenticationWindow = loader.load(App.class.getResourceAsStream("/layout/AuthenticationWindow.fxml"));
         AuthenticationWindowController authenticationWindowController = loader.getController();
         authenticationWindow.getStylesheets().add("/css/main.css");
@@ -40,5 +46,10 @@ public class App extends Application {
 
 
         return authenticationWindow;
+    }
+
+    @Override
+    public void stop() {
+        connection.close();
     }
 }

@@ -12,7 +12,7 @@ import java.util.Queue;
  */
 
 public class OutputStreamThread extends Thread {
-    private static final long SEND_TIMEOUT = 100;
+    private static final long SEND_TIMEOUT = 10;
     private final ProtocolOutputStream protocolOutputStream;
     private final Queue<Message> messageQueue;
     private boolean isRunning;

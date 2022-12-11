@@ -8,7 +8,7 @@ import ru.itis.snaky.client.dto.Room;
 
 import java.io.IOException;
 
-public class RoomController {
+public class RoomViewController {
 
     @FXML
     private Pane box;
@@ -18,8 +18,8 @@ public class RoomController {
     @FXML
     private Label playersCount;
 
-    public RoomController(Room room) {
-        FXMLLoader fxmlLoader = new FXMLLoader(RoomController.class.getResource("/layout/components/Room.fxml"));
+    public RoomViewController(Room room) {
+        FXMLLoader fxmlLoader = new FXMLLoader(RoomViewController.class.getResource("/layout/components/RoomView.fxml"));
         fxmlLoader.setController(this);
         try {
             Pane box = fxmlLoader.load();

@@ -2,6 +2,7 @@ package ru.itis.snaky.client.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -32,28 +33,25 @@ public class AuthenticationWindowController {
 
     @FXML
     void send() {
-//        List<Room> rooms = List.of(new Room("room 1", 10),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 2", 15),
-//                new Room("room 3", 5));
-//
-//        roomsWindowController.setRoomList(rooms);
-        controlHandler.requestRooms();
-        Stage stage = (Stage) enterButton.getScene().getWindow();
-        stage.setScene(new Scene(roomsWindowController.getRoomsPane()));
+        String nickname = nicknameField.getText();
+
+        if (validateNickname(nickname)) {
+
+            controlHandler.requestRooms();
+            Stage stage = (Stage) enterButton.getScene().getWindow();
+            stage.setScene(new Scene(roomsWindowController.getRoomsPane()));
+        } else {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Nickname has illegal symbols");
+            alert.show();
+        }
     }
 
+    private boolean validateNickname(String nickname) {
+        if (nickname == null || nickname.equals("")) {
+            return false;
+        }
+        return true;
+    }
 }
 
