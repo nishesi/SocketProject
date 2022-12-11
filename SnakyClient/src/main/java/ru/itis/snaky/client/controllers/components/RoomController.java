@@ -1,4 +1,4 @@
-package ru.itis.snaky.client.view;
+package ru.itis.snaky.client.controllers.components;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

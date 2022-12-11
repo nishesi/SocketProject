@@ -17,7 +17,7 @@ import lombok.Setter;
 import ru.itis.snaky.client.dto.Room;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseHandler;
-import ru.itis.snaky.client.view.RoomController;
+import ru.itis.snaky.client.controllers.components.RoomController;
 
 import java.net.URL;
 import java.util.List;
