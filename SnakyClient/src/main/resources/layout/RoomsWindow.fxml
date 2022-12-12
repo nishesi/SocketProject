@@ -15,12 +15,17 @@
         </ListView>
     </center>
     <right>
-        <VBox alignment="TOP_CENTER" spacing="10.0">
+        <VBox id="right-bar">
             <BorderPane.margin>
                 <Insets right="10.0" top="10.0"/>
             </BorderPane.margin>
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#toAuthWindow" text="Change Nickname"/>
-            <Button fx:id="updateRoomsButton" mnemonicParsing="false" onAction="#updateRooms" text="Update Rooms"/>
+
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#toAuthWindow">
+                Change Nickname
+            </Button>
+            <Button fx:id="updateRoomsButton" mnemonicParsing="false" onAction="#updateRooms">
+                Update Rooms
+            </Button>
         </VBox>
     </right>
 </BorderPane>
