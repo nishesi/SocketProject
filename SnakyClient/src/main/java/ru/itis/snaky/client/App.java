@@ -9,43 +9,49 @@ import ru.itis.snaky.client.controllers.AuthenticationWindowController;
 import ru.itis.snaky.client.controllers.RoomsWindowController;
 import ru.itis.snaky.client.core.Connection;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 public class App extends Application {
     private Connection connection;
 
+    private AuthenticationWindowController authenticationWindowController;
+    private RoomsWindowController roomsWindowController;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         connection = new Connection(InetAddress.getLocalHost(), (short) 7777);
-        Pane authenticationWindow = initContext();
+        initAuthenticationWindowController();
+        initRoomsWindowController();
 
-        primaryStage.setScene(new Scene(authenticationWindow));
+        primaryStage.setScene(new Scene(authenticationWindowController.getAuthenticationPane()));
         primaryStage.show();
 
     }
 
-    private Pane initContext() throws Exception {
+    private void initAuthenticationWindowController() throws Exception {
         FXMLLoader loader = new FXMLLoader();
-
         Pane authenticationWindow = loader.load(App.class.getResourceAsStream("/layout/AuthenticationWindow.fxml"));
-        AuthenticationWindowController authenticationWindowController = loader.getController();
         authenticationWindow.getStylesheets().add("/css/main.css");
         authenticationWindow.getStylesheets().add("/css/AuthenticationWindow.css");
 
-        loader = new FXMLLoader();
+        AuthenticationWindowController authenticationWindowController = loader.getController();
+        authenticationWindowController.setAuthenticationPane(authenticationWindow);
+
+        this.authenticationWindowController = authenticationWindowController;
+    }
+
+    private void initRoomsWindowController() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
         Pane roomsWindow = loader.load(App.class.getResourceAsStream("/layout/RoomsWindow.fxml"));
-        RoomsWindowController roomsWindowController = loader.getController();
-        roomsWindowController.setAuthenticationWindowController(authenticationWindowController);
         roomsWindow.getStylesheets().add("/css/main.css");
         roomsWindow.getStylesheets().add("/css/RoomsWindow.css");
 
-        authenticationWindowController.setAuthenticationPane(authenticationWindow);
-        authenticationWindowController.setRoomsWindowController(roomsWindowController);
-
+        RoomsWindowController roomsWindowController = loader.getController();
         roomsWindowController.setRoomsPane(roomsWindow);
+        roomsWindowController.setAuthenticationWindowController(authenticationWindowController);
 
-
-        return authenticationWindow;
+        this.roomsWindowController = roomsWindowController;
     }
 
     @Override

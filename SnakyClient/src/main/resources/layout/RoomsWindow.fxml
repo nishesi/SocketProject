@@ -22,10 +22,5 @@
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#toAuthWindow" text="Change Nickname"/>
             <Button fx:id="updateRoomsButton" mnemonicParsing="false" onAction="#updateRooms" text="Update Rooms"/>
         </VBox>
-
     </right>
-    <!--    <stylesheets>-->
-    <!--        <URL value="@../css/main.css"/>-->
-    <!--        <URL value="@../css/RoomsWindow.css"/>-->
-    <!--    </stylesheets>-->
 </BorderPane>
