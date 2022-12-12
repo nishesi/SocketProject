@@ -16,7 +16,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        connection = new Connection(InetAddress.getLocalHost(), (short) 80);
+        connection = new Connection(InetAddress.getLocalHost(), (short) 7777);
         Pane authenticationWindow = initContext();
 
         primaryStage.setScene(new Scene(authenticationWindow));
