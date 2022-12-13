@@ -1,7 +1,9 @@
 package ru.itis.snaky.client.handlers;
 
+import javafx.scene.paint.Color;
 import ru.itis.snaky.client.core.InputStreamThread;
 import ru.itis.snaky.client.dto.Room;
+import ru.itis.snaky.client.dto.Snake;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +33,7 @@ public abstract class ResponseHandler extends Thread {
         synchronized (rooms) {
             if (rooms.isEmpty()) {
                 try {
-                    rooms.wait();
+                    rooms.wait(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -43,6 +45,17 @@ public abstract class ResponseHandler extends Thread {
             return toReturn;
         }
     }
+    private Snake snake = new Snake(new int[][]{{4, 11}, {3, 11}, {2, 11}, {1, 11}}, "totot", Color.CYAN);
+    private long time = System.currentTimeMillis();
+    public List<Snake> getSnakes() {
+        if (System.currentTimeMillis() - time > 100) {
+            int[][] cubes = snake.getBodyCoordinates();
 
-
+            for (int[] coordinates : cubes) {
+                coordinates[0] += 1;
+            }
+            time = System.currentTimeMillis();
+        }
+        return List.of(snake);
+    }
 }
