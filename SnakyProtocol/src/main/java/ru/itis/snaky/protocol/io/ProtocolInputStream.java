@@ -11,7 +11,7 @@ import java.io.*;
 public class ProtocolInputStream extends InputStream {
     private final InputStream inputStream;
 
-    public Message readMessage() {
+    public Message readMessage() throws ProtocolSerializationException {
         try {
             int length = inputStream.read() << 24 |
                     inputStream.read() << 16 |

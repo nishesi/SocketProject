@@ -13,7 +13,7 @@ import java.io.OutputStream;
 public class ProtocolOutputStream extends OutputStream {
     private final OutputStream outputStream;
 
-    public void writeMessage(Message message) {
+    public void writeMessage(Message message) throws ProtocolSerializationException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(buffer)) {

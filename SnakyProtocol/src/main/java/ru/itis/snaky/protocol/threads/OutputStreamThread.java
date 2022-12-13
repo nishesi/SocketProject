@@ -1,7 +1,7 @@
 package ru.itis.snaky.protocol.threads;
 
-import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.io.ProtocolOutputStream;
+import ru.itis.snaky.protocol.message.Message;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -20,11 +20,19 @@ public class OutputStreamThread extends Thread {
     public OutputStreamThread(OutputStream outputStream) {
         this.protocolOutputStream = new ProtocolOutputStream(outputStream);
         this.messageQueue = new LinkedList<>();
-        this.isRunning = true;
+        setName("Protocol-OutputStream-Thread");
+    }
+
+    private static void setSendTimeout(long millis) {
+        if (millis <= 0) {
+            throw new IllegalArgumentException("illegal time = " + millis);
+        }
+        SEND_TIMEOUT = millis;
     }
 
     @Override
     public void run() {
+        isRunning = true;
         while (isRunning) {
             synchronized (messageQueue) {
                 while (!messageQueue.isEmpty()) {
@@ -40,22 +48,15 @@ public class OutputStreamThread extends Thread {
     }
 
     public void send(Message message) {
-        if (isRunning) {
-            throw new RuntimeException("Thread finished");
+        if (this.isAlive()) {
+            synchronized (messageQueue) {
+                messageQueue.add(message);
+            }
         }
-        synchronized (messageQueue) {
-            messageQueue.add(message);
-        }
+        throw new RuntimeException(getName() + " finished");
     }
 
     public void finish() {
         isRunning = false;
-    }
-
-    private static void setSendTimeout(long millis) {
-        if (millis <= 0) {
-            throw new IllegalArgumentException("illegal time = " + millis);
-        }
-        SEND_TIMEOUT = millis;
     }
 }

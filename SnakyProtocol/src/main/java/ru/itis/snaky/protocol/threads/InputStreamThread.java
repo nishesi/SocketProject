@@ -1,7 +1,7 @@
 package ru.itis.snaky.protocol.threads;
 
-import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.io.ProtocolInputStream;
+import ru.itis.snaky.protocol.message.Message;
 
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -16,11 +16,12 @@ public class InputStreamThread extends Thread {
     public InputStreamThread(InputStream inputStream) {
         this.protocolInputStream = new ProtocolInputStream(inputStream);
         this.messages = new LinkedList<>();
-        this.isRunning = true;
+        setName("Protocol-InputStream-Thread");
     }
 
     @Override
     public void run() {
+        isRunning = true;
         while (isRunning) {
             Message message = protocolInputStream.readMessage();
             synchronized (messages) {
@@ -30,12 +31,12 @@ public class InputStreamThread extends Thread {
     }
 
     public Optional<Message> getMessage() {
-        if (!isRunning) {
-            throw new RuntimeException("Thread finished");
+        if (this.isAlive()) {
+            synchronized (messages) {
+                return Optional.ofNullable(messages.poll());
+            }
         }
-        synchronized (messages) {
-            return Optional.ofNullable(messages.poll());
-        }
+        throw new RuntimeException(getName() + " finished");
     }
 
     public void finish() {
