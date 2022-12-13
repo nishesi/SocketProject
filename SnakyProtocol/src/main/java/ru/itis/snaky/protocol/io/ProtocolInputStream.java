@@ -1,7 +1,8 @@
-package ru.itis.snaky.protocol;
+package ru.itis.snaky.protocol.io;
 
 import lombok.AllArgsConstructor;
 import ru.itis.snaky.protocol.exceptions.ProtocolSerializationException;
+import ru.itis.snaky.protocol.message.Message;
 
 import java.io.*;
 

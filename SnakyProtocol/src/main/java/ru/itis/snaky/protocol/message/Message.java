@@ -1,9 +1,12 @@
-package ru.itis.snaky.protocol;
+package ru.itis.snaky.protocol.message;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
+import ru.itis.snaky.protocol.SnakySerializable;
 
+@Getter
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor

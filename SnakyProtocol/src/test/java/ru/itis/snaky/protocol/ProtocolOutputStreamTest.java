@@ -1,6 +1,10 @@
 package ru.itis.snaky.protocol;
 
 import org.junit.jupiter.api.Test;
+import ru.itis.snaky.protocol.io.ProtocolInputStream;
+import ru.itis.snaky.protocol.io.ProtocolOutputStream;
+import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.message.MessageType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

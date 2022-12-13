@@ -1,4 +1,4 @@
-package ru.itis.snaky.protocol;
+package ru.itis.snaky.protocol.message;
 
 import ru.itis.snaky.protocol.exceptions.ProtocolIllegalMessageTypeException;
 

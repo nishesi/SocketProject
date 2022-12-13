@@ -1,7 +1,7 @@
-package ru.itis.snaky.client.core;
+package ru.itis.snaky.protocol.threads;
 
-import ru.itis.snaky.protocol.Message;
-import ru.itis.snaky.protocol.ProtocolOutputStream;
+import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.io.ProtocolOutputStream;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -12,7 +12,7 @@ import java.util.Queue;
  */
 
 public class OutputStreamThread extends Thread {
-    private static final long SEND_TIMEOUT = 10;
+    private static long SEND_TIMEOUT = 10;
     private final ProtocolOutputStream protocolOutputStream;
     private final Queue<Message> messageQueue;
     private boolean isRunning;
@@ -50,5 +50,12 @@ public class OutputStreamThread extends Thread {
 
     public void finish() {
         isRunning = false;
+    }
+
+    private static void setSendTimeout(long millis) {
+        if (millis <= 0) {
+            throw new IllegalArgumentException("illegal time = " + millis);
+        }
+        SEND_TIMEOUT = millis;
     }
 }

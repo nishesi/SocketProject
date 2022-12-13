@@ -1,7 +1,7 @@
-package ru.itis.snaky.client.core;
+package ru.itis.snaky.protocol.threads;
 
-import ru.itis.snaky.protocol.Message;
-import ru.itis.snaky.protocol.ProtocolInputStream;
+import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.io.ProtocolInputStream;
 
 import java.io.InputStream;
 import java.util.LinkedList;
