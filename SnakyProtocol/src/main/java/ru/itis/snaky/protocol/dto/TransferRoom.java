@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itis.snaky.protocol.SnakySerializable;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Room {
+public class TransferRoom implements SnakySerializable {
 
     // wight and height of plane
     private int size;

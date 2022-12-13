@@ -6,7 +6,7 @@ import ru.itis.snaky.protocol.SnakySerializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Snake implements SnakySerializable {
+public class TransferSnake implements SnakySerializable {
 
     private Cube[] bodyCubes;
 
