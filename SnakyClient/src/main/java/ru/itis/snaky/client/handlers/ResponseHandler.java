@@ -1,9 +1,10 @@
 package ru.itis.snaky.client.handlers;
 
-import javafx.scene.paint.Color;
-import ru.itis.snaky.client.core.InputStreamThread;
+import ru.itis.snaky.client.dto.Fruit;
 import ru.itis.snaky.client.dto.Room;
 import ru.itis.snaky.client.dto.Snake;
+import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.threads.InputStreamThread;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,46 +17,75 @@ import java.util.List;
 
 public abstract class ResponseHandler extends Thread {
     private final InputStreamThread inputStreamThread;
-
     private final List<Room> rooms;
+    private final List<Snake> snakes;
+    private final List<Fruit> fruits;
+    private boolean isRunning;
 
     public ResponseHandler(InputStreamThread inputStreamThread) {
         this.inputStreamThread = inputStreamThread;
-        this.rooms = new ArrayList<>(100);
+        this.rooms = new ArrayList<>();
+        this.snakes = new ArrayList<>();
+        this.fruits = new ArrayList<>();
+        isRunning = false;
     }
 
     @Override
     public void run() {
-        //TODO read messages perform to assosiate objects
+        isRunning = true;
+
+        while (isRunning) {
+            inputStreamThread.getMessage().ifPresent(this::handleMessage);
+        }
+    }
+
+    private void handleMessage(Message message) {
+        try {
+            switch (message.getMessageType()) {
+                case ROOMS_LIST:
+                    synchronized (rooms) {
+                        rooms.clear();
+                        rooms.addAll((List<Room>) (message.getParameter(0)));
+                    }
+                    break;
+                case SNAKES_POSITIONS:
+                    synchronized (snakes) {
+                        snakes.clear();
+                        snakes.addAll((List<Snake>) (message.getParameter(0)));
+                    }
+            }
+        } catch (ClassCastException ex) {
+            throw new RuntimeException(
+                    "Invalid message: message type = " + message.getMessageType().getValue() +
+                    " params = " + message.getParameters().toString());
+        }
     }
 
     public List<Room> getRooms() {
         synchronized (rooms) {
-            if (rooms.isEmpty()) {
-                try {
-                    rooms.wait(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            List<Room> toReturn = new ArrayList<>();
-            Collections.copy(toReturn, rooms);
-            rooms.clear();
-            return toReturn;
+            return getPropertyCopy(rooms);
         }
     }
-    private Snake snake = new Snake(new int[][]{{4, 11}, {3, 11}, {2, 11}, {1, 11}}, "totot", Color.CYAN);
-    private long time = System.currentTimeMillis();
-    public List<Snake> getSnakes() {
-        if (System.currentTimeMillis() - time > 100) {
-            int[][] cubes = snake.getBodyCoordinates();
 
-            for (int[] coordinates : cubes) {
-                coordinates[0] += 1;
-            }
-            time = System.currentTimeMillis();
+    public void finish() {
+        isRunning = false;
+    }
+
+    public List<Snake> getSnakes() {
+        synchronized (snakes) {
+            return getPropertyCopy(snakes);
         }
-        return List.of(snake);
+    }
+
+    public List<Fruit> getFruits() {
+        synchronized (fruits) {
+            return getPropertyCopy(fruits);
+        }
+    }
+
+    private <T> List<T> getPropertyCopy(List<T> list) {
+        List<T> toReturn = new ArrayList<>();
+        Collections.copy(toReturn, list);
+        return toReturn;
     }
 }
