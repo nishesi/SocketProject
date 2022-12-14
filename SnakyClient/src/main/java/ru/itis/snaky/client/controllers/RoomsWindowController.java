@@ -6,7 +6,6 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -14,38 +13,35 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import ru.itis.snaky.client.controllers.components.RoomViewController;
 import ru.itis.snaky.client.dto.Room;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseHandler;
-import ru.itis.snaky.client.controllers.components.RoomViewController;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class RoomsWindowController implements Initializable {
+    @FXML
+    public Button backButton;
+    @FXML
+    public Button updateRoomsButton;
     @Setter
     private ControlHandler controlHandler;
     @Setter
     private ResponseHandler responseHandler;
     @Setter
     private AuthenticationWindowController authenticationWindowController;
-
     @Getter
     @Setter
     private Pane roomsPane;
-
-    @FXML
-    public Button backButton;
-    @FXML
-    public Button updateRoomsButton;
     @FXML
     private ListView<Room> roomsListView;
 
     @FXML
     public void updateRooms() {
-
-        Task<Void> rooms = new Task<>() {
+        new Task<>() {
             @Override
             protected Void call() {
                 List<Room> rooms = responseHandler.getRooms();
@@ -63,15 +59,15 @@ public class RoomsWindowController implements Initializable {
     public void roomChosen() {
         Room room = roomsListView.getSelectionModel().getSelectedItem();
 
+        controlHandler.sendChosenRoom(room);
+
         Stage stage = (Stage) roomsListView.getScene().getWindow();
-        stage.setScene(new Scene(loadGameWindow()));
+        stage.setScene(
+                new GameWindowController(this, controlHandler)
+                        .getGamePane()
+                        .getScene());
     }
 
-    @FXML
-    private Pane loadGameWindow() {
-        GameWindowController gameWindowController = new GameWindowController(this);
-        return gameWindowController.getGamePane();
-    }
     @FXML
     public void toAuthWindow(ActionEvent actionEvent) {
         Stage stage = (Stage) backButton.getScene().getWindow();

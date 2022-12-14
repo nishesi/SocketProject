@@ -21,7 +21,7 @@
         <VBox id="right-bar">
             <ButtonBar id="button-bar">
                 <buttons>
-                    <Button fx:id="startButton" mnemonicParsing="false" text="Start"/>
+                    <Button fx:id="startButton" onAction="#startGame" mnemonicParsing="false" text="Start"/>
                     <Button fx:id="exitButton" onAction="#toRooms" mnemonicParsing="false" text="Exit"/>
                 </buttons>
             </ButtonBar>
