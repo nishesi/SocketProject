@@ -8,7 +8,10 @@ import javafx.stage.Stage;
 import ru.itis.snaky.client.controllers.AuthenticationWindowController;
 import ru.itis.snaky.client.controllers.RoomsWindowController;
 import ru.itis.snaky.client.core.Connection;
+import ru.itis.snaky.client.handlers.ControlHandler;
+import ru.itis.snaky.protocol.threads.OutputStreamThread;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 
@@ -50,6 +53,17 @@ public class App extends Application {
         RoomsWindowController roomsWindowController = loader.getController();
         roomsWindowController.setRoomsPane(roomsWindow);
         roomsWindowController.setAuthenticationWindowController(authenticationWindowController);
+        roomsWindowController.setControlHandler(new ControlHandler(new OutputStreamThread(new ByteArrayOutputStream())) {
+            @Override
+            public void requestRooms() {
+
+            }
+
+            @Override
+            public void sendDirection(Direction direction) {
+                System.out.println(direction.name());
+            }
+        });
 
         this.roomsWindowController = roomsWindowController;
     }

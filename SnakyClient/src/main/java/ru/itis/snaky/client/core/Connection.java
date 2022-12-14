@@ -1,6 +1,8 @@
 package ru.itis.snaky.client.core;
 
 import lombok.Getter;
+import ru.itis.snaky.protocol.threads.InputStreamThread;
+import ru.itis.snaky.protocol.threads.OutputStreamThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
