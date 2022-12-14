@@ -36,7 +36,7 @@ public class AuthenticationWindowController {
         String nickname = nicknameField.getText();
 
         if (validateNickname(nickname)) {
-
+            controlHandler.sendInitMessage(nickname);
             controlHandler.requestRooms();
             Stage stage = (Stage) enterButton.getScene().getWindow();
             stage.setScene(new Scene(roomsWindowController.getRoomsPane()));
