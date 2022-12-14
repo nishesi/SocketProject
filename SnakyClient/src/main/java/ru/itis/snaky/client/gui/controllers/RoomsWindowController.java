@@ -1,4 +1,4 @@
-package ru.itis.snaky.client.controllers;
+package ru.itis.snaky.client.gui.controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import ru.itis.snaky.client.controllers.components.RoomViewController;
+import ru.itis.snaky.client.gui.controllers.components.RoomViewController;
 import ru.itis.snaky.client.dto.Room;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseHandler;
@@ -46,9 +46,7 @@ public class RoomsWindowController implements Initializable {
             protected Void call() {
                 List<Room> rooms = responseHandler.getRooms();
 
-                Platform.runLater(() -> {
-                    roomsListView.setItems(FXCollections.observableList(rooms));
-                });
+                Platform.runLater(() -> roomsListView.setItems(FXCollections.observableList(rooms)));
                 return null;
             }
         };

@@ -1,4 +1,4 @@
-package ru.itis.snaky.client.controllers;
+package ru.itis.snaky.client.gui.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -48,10 +48,7 @@ public class AuthenticationWindowController {
     }
 
     private boolean validateNickname(String nickname) {
-        if (nickname == null || nickname.equals("")) {
-            return false;
-        }
-        return true;
+        return nickname != null && !nickname.equals("");
     }
 }
 

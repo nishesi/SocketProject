@@ -1,4 +1,4 @@
-package ru.itis.snaky.client;
+package ru.itis.snaky.client.gui;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

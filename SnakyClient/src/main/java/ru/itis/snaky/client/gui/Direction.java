@@ -1,4 +1,4 @@
-package ru.itis.snaky.client;
+package ru.itis.snaky.client.gui;
 
 public enum Direction {
     TOP((byte)1),

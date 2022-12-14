@@ -1,4 +1,4 @@
-package ru.itis.snaky.client.controllers;
+package ru.itis.snaky.client.gui.controllers;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -13,8 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Setter;
-import ru.itis.snaky.client.Direction;
-import ru.itis.snaky.client.Drawer;
+import ru.itis.snaky.client.gui.Direction;
+import ru.itis.snaky.client.gui.Drawer;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseHandler;
 
@@ -27,7 +27,7 @@ public class GameWindowController {
     private ControlHandler controlHandler;
     @Setter
     private RoomsWindowController roomsWindowController;
-    private Drawer drawer;
+    private final Drawer drawer;
     private Timeline animationTimeline;
 
     public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler) {
@@ -80,9 +80,8 @@ public class GameWindowController {
 
         animationTimeline = new Timeline(new KeyFrame(
                 new Duration(1),
-                actionEvent -> {
-                    drawer.drawSnakes(responseHandler.getSnakes());
-                }));
+                actionEvent -> drawer.drawSnakes(responseHandler.getSnakes())));
+
         animationTimeline.setCycleCount(Animation.INDEFINITE);
     }
 
