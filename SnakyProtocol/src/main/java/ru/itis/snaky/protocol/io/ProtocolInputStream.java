@@ -1,6 +1,7 @@
 package ru.itis.snaky.protocol.io;
 
 import lombok.AllArgsConstructor;
+import ru.itis.snaky.protocol.exceptions.ProtocolIllegalMessageTypeException;
 import ru.itis.snaky.protocol.exceptions.ProtocolSerializationException;
 import ru.itis.snaky.protocol.message.Message;
 
@@ -13,6 +14,13 @@ public class ProtocolInputStream extends InputStream {
 
     public Message readMessage() throws ProtocolSerializationException {
         try {
+
+            int messageType = inputStream.read();
+
+            if ((byte) messageType != messageType) {
+                throw new ProtocolIllegalMessageTypeException("illegal message type");
+            }
+
             int length = inputStream.read() << 24 |
                     inputStream.read() << 16 |
                     inputStream.read() << 8 |
@@ -26,7 +34,13 @@ public class ProtocolInputStream extends InputStream {
             }
 
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            return (Message) objectInputStream.readObject();
+            Message message = (Message) objectInputStream.readObject();
+
+            if ((byte) messageType != message.getMessageType().getValue()) {
+                throw new ProtocolSerializationException("expected " + messageType + " type, found " + message.getMessageType().getValue());
+            }
+
+            return message;
 
         } catch (ClassNotFoundException | IOException e) {
             throw new ProtocolSerializationException(e);

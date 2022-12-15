@@ -21,6 +21,7 @@ public class ProtocolOutputStream extends OutputStream {
             objectOutputStream.writeObject(message);
             byte[] serializedMessage = buffer.toByteArray();
 
+            outputStream.write(message.getMessageType().getValue());
             outputStream.write(serializedMessage.length >> 24);
             outputStream.write(serializedMessage.length >> 16);
             outputStream.write(serializedMessage.length >> 8);
