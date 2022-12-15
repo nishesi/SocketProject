@@ -1,33 +1,43 @@
 package ru.itis.snaky.server.core;
 
-
-import ru.itis.snaky.protocol.ProtocolInputStream;
-import ru.itis.snaky.protocol.ProtocolOutputStream;
+import lombok.Getter;
+import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.threads.InputStreamThread;
+import ru.itis.snaky.protocol.threads.OutputStreamThread;
+import ru.itis.snaky.server.listeners.AbstractServerEventListener;
+import ru.itis.snaky.server.listeners.ServerEventListener;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.UUID;
 
 public class Connection extends Thread {
 
-    private long id;
+    private UUID id;
 
-    private Server server;
+    @Getter
+    private InputStreamThread inputStream;
 
-    private Socket socket;
+    @Getter
+    private OutputStreamThread outputStream;
 
-    private ProtocolInputStream inputStream;
-    private ProtocolOutputStream outputStream;
+    public Connection(Socket socket) throws IOException {
+        this.id = UUID.randomUUID();
+        inputStream = new InputStreamThread(socket.getInputStream());
+        outputStream = new OutputStreamThread(socket.getOutputStream());
 
-    public Connection(Server server, Socket socket) throws IOException {
-        this.server = server;
-        this.socket = socket;
-        inputStream = new ProtocolInputStream(socket.getInputStream());
-        outputStream = new ProtocolOutputStream(socket.getOutputStream());
+        inputStream.start();
+        outputStream.start();
     }
-
 
     @Override
     public void run() {
-        // todo: process messages and call listeners
+        while (true) {
+            Message messageFromClient = inputStream.getMessage().orElse(null);
+            if (messageFromClient != null) {
+                ServerEventListener listener = AbstractServerEventListener.get(messageFromClient.getMessageType());
+                listener.handle(this);
+            }
+        }
     }
 }

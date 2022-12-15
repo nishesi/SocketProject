@@ -36,7 +36,7 @@ public class ServerSocketImpl implements Server {
 
     public void handleConnection(Socket socket) throws ServerException {
         try {
-            Connection connection = new Connection(this, socket);
+            Connection connection = new Connection(socket);
             connections.add(connection);
             connection.start();
         } catch (IOException e) {
