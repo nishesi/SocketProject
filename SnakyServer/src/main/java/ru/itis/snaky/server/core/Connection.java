@@ -33,11 +33,10 @@ public class Connection extends Thread {
     @Override
     public void run() {
         while (true) {
-            Message messageFromClient = inputStream.getMessage().orElse(null);
-            if (messageFromClient != null) {
-                ServerEventListener listener = AbstractServerEventListener.get(messageFromClient.getMessageType());
+            inputStream.getMessage().ifPresent(message -> {
+                ServerEventListener listener = AbstractServerEventListener.get(message.getMessageType());
                 listener.handle(this);
-            }
+            });
         }
     }
 }
