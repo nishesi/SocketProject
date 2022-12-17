@@ -8,9 +8,10 @@ public enum MessageType {
     CHOSEN_ROOM((byte) 2),
     ROOM_CONDITION((byte) 3),
     START((byte) 4),
-    LOSING((byte) 5),
-    EXIT((byte) 6),
-    CLOSE((byte) 7);
+    DIRECTION((byte) 5),
+    LOSING((byte) 6),
+    EXIT((byte) 7),
+    CLOSE((byte) 8);
 
     private final byte value;
 
