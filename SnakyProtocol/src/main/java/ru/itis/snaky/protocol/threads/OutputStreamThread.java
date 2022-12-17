@@ -52,8 +52,9 @@ public class OutputStreamThread extends Thread {
             synchronized (messageQueue) {
                 messageQueue.add(message);
             }
+        } else {
+            throw new RuntimeException(getName() + " finished");
         }
-        throw new RuntimeException(getName() + " finished");
     }
 
     public void finish() {
