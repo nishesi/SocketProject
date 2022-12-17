@@ -35,9 +35,9 @@ public class App extends Application {
 
     private void initAuthenticationWindowController() throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        Pane authenticationWindow = loader.load(App.class.getResourceAsStream("/layout/AuthenticationWindow.fxml"));
+        Pane authenticationWindow = loader.load(App.class.getResourceAsStream("/layout/authenticationWindow.fxml"));
         authenticationWindow.getStylesheets().add("/css/main.css");
-        authenticationWindow.getStylesheets().add("/css/AuthenticationWindow.css");
+        authenticationWindow.getStylesheets().add("/css/authentication-window.css");
 
         AuthenticationWindowController authenticationWindowController = loader.getController();
         authenticationWindowController.setAuthenticationPane(authenticationWindow);
@@ -47,9 +47,9 @@ public class App extends Application {
 
     private void initRoomsWindowController() throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        Pane roomsWindow = loader.load(App.class.getResourceAsStream("/layout/RoomsWindow.fxml"));
+        Pane roomsWindow = loader.load(App.class.getResourceAsStream("/layout/roomsWindow.fxml"));
         roomsWindow.getStylesheets().add("/css/main.css");
-        roomsWindow.getStylesheets().add("/css/RoomsWindow.css");
+        roomsWindow.getStylesheets().add("/css/rooms-window.css");
 
         RoomsWindowController roomsWindowController = loader.getController();
         roomsWindowController.setRoomsPane(roomsWindow);

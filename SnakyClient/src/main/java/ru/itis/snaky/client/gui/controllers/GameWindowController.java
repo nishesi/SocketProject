@@ -38,13 +38,13 @@ public class GameWindowController {
     }
 
     private void initFxml() {
-        FXMLLoader fxmlLoader = new FXMLLoader(GameWindowController.class.getResource("/layout/GameWindow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(GameWindowController.class.getResource("/layout/gameWindow.fxml"));
         fxmlLoader.setController(this);
 
         try {
             gamePane = fxmlLoader.load();
             gamePane.getStylesheets().add("/css/main.css");
-            gamePane.getStylesheets().add("/css/GameWindow.css");
+            gamePane.getStylesheets().add("/css/game-window.css");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
