@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,9 +70,13 @@ public class RoomsWindowController implements Initializable {
             responseObserver.addHandler(MessageType.CHOSEN_ROOM, message -> {
                 Platform.runLater(() -> {
                     if (message.getParameter(0).equals("1")) {
+                        //todo get from message cubescount and backgroundcolors
+                        int cubesCount = 12;
+                        Color[] backbroundColors = new Color[]{Color.FORESTGREEN, Color.GREEN};
 
                         stage.setScene(
-                                new GameWindowController(this, controlHandler, responseObserver)
+                                new GameWindowController(this, controlHandler, responseObserver,
+                                        cubesCount, backbroundColors)
                                         .getGamePane()
                                         .getScene());
 

@@ -6,44 +6,41 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Setter;
 import ru.itis.snaky.client.gui.Direction;
-import ru.itis.snaky.client.gui.Drawer;
+import ru.itis.snaky.client.gui.GameField;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseObserver;
 
 import java.io.IOException;
 
 public class GameWindowController {
-    private final Drawer drawer;
+    private final GameField gameField;
     private final ResponseObserver responseObserver;
     private final ControlHandler controlHandler;
+    private Timeline animationTimeline;
     @Setter
     private RoomsWindowController roomsWindowController;
-    private Timeline animationTimeline;
     @FXML
-    private Pane gamePane;
+    private BorderPane gamePane;
     @FXML
     private Button startButton;
     @FXML
     private Button exitButton;
-    @FXML
-    private Canvas backgroundCanvas;
-    @FXML
-    private Canvas canvas;
 
-    public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler, ResponseObserver responseObserver) {
+    public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler, ResponseObserver responseObserver, int cubesCount, Color[] backgroundColors) {
         this.roomsWindowController = roomsWindowController;
         this.controlHandler = controlHandler;
         this.responseObserver = responseObserver;
         initFxml();
-        this.drawer = new Drawer(backgroundCanvas, canvas);
+        this.gameField = new GameField(cubesCount, backgroundColors);
+        gamePane.setCenter(gameField.getCanvasPane());
         initGameEnvironment();
     }
 
@@ -86,11 +83,10 @@ public class GameWindowController {
     }
 
     private void initGameEnvironment() {
-        drawer.paintBackground();
 
         animationTimeline = new Timeline(new KeyFrame(
                 new Duration(1),
-                actionEvent -> drawer.drawSnakes(responseObserver.getSnakes())));
+                actionEvent -> gameField.drawSnakes(responseObserver.getSnakes())));
 
         animationTimeline.setCycleCount(Animation.INDEFINITE);
     }
@@ -101,14 +97,6 @@ public class GameWindowController {
 
     public Pane getGamePane() {
         return gamePane;
-    }
-
-    public void setBackgroundColors(Color[] colors) {
-        drawer.setBackgroundColors(colors);
-    }
-
-    public void setSize(int size) {
-        drawer.setCubesCount(size);
     }
 
     @FXML
