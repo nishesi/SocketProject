@@ -1,7 +1,7 @@
 package ru.itis.snaky.client.gui.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -10,13 +10,14 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import ru.itis.snaky.client.handlers.ControlHandler;
-import ru.itis.snaky.client.handlers.ResponseHandler;
+import ru.itis.snaky.client.handlers.ResponseObserver;
+import ru.itis.snaky.protocol.message.MessageType;
 
 public class AuthenticationWindowController {
     @Setter
     private ControlHandler controlHandler;
     @Setter
-    private ResponseHandler responseHandler;
+    private ResponseObserver responseObserver;
 
     @Getter
     @Setter
@@ -35,16 +36,30 @@ public class AuthenticationWindowController {
     void send() {
         String nickname = nicknameField.getText();
 
-        if (validateNickname(nickname)) {
-            controlHandler.sendInitMessage(nickname);
-            controlHandler.requestRooms();
-            Stage stage = (Stage) enterButton.getScene().getWindow();
-            stage.setScene(new Scene(roomsWindowController.getRoomsPane()));
-        } else {
-
+        if (!validateNickname(nickname)) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Nickname has illegal symbols");
             alert.show();
+            return;
         }
+
+        controlHandler.sendAuthMessage(nickname);
+
+        Stage stage = (Stage) enterButton.getScene().getWindow();
+
+        responseObserver.addHandler(MessageType.AUTHORIZATION, message -> {
+
+            Platform.runLater(() -> {
+                if ((message.getParameter(0)).equals("1")) {
+
+                    stage.setScene(
+                            roomsWindowController.getRoomsPane().getScene());
+                    roomsWindowController.updateRooms();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+                    alert.show();
+                }
+            });
+        });
     }
 
     private boolean validateNickname(String nickname) {

@@ -6,9 +6,6 @@ import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.message.MessageType;
 import ru.itis.snaky.protocol.threads.OutputStreamThread;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class ControlHandler {
     private final OutputStreamThread outputStreamThread;
 
@@ -20,23 +17,27 @@ public class ControlHandler {
         outputStreamThread.send(new Message(MessageType.ROOMS_LIST, new Object[0]));
     }
 
-    public void sendInitMessage(String nickname) {
+    public void sendAuthMessage(String nickname) {
         outputStreamThread.send(new Message(MessageType.AUTHORIZATION, new Object[]{nickname}));
     }
 
     public void sendChosenRoom(Room room) {
-        outputStreamThread.send(new Message(MessageType.CHOOSE_ROOM, new Object[]{room.getName()}));
+        outputStreamThread.send(new Message(MessageType.CHOSEN_ROOM, new Object[]{room.getName()}));
     }
 
     public void sendStartGameMessage() {
-//        outputStreamThread.send(new Message());
+        outputStreamThread.send(new Message(MessageType.START, new Object[0]));
     }
 
     public void sendDirection(Direction direction) {
-        // TODO
+        outputStreamThread.send(new Message(MessageType.DIRECTION, new Object[]{direction.getCode()}));
+    }
+
+    public void leaveRoom() {
+        outputStreamThread.send(new Message(MessageType.EXIT, new Object[0]));
     }
 
     public void sendCloseMessage() {
-        // TODO Add session close message type
+        outputStreamThread.send(new Message(MessageType.CLOSE, new Object[0]));
     }
 }

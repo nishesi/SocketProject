@@ -16,25 +16,35 @@ import lombok.Setter;
 import ru.itis.snaky.client.gui.Direction;
 import ru.itis.snaky.client.gui.Drawer;
 import ru.itis.snaky.client.handlers.ControlHandler;
-import ru.itis.snaky.client.handlers.ResponseHandler;
+import ru.itis.snaky.client.handlers.ResponseObserver;
 
 import java.io.IOException;
 
 public class GameWindowController {
-    @Setter
-    private ResponseHandler responseHandler;
-    @Setter
-    private ControlHandler controlHandler;
+    private final Drawer drawer;
+    private final ResponseObserver responseObserver;
+    private final ControlHandler controlHandler;
     @Setter
     private RoomsWindowController roomsWindowController;
-    private final Drawer drawer;
     private Timeline animationTimeline;
+    @FXML
+    private Pane gamePane;
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button exitButton;
+    @FXML
+    private Canvas backgroundCanvas;
+    @FXML
+    private Canvas canvas;
 
-    public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler) {
+    public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler, ResponseObserver responseObserver) {
         this.roomsWindowController = roomsWindowController;
         this.controlHandler = controlHandler;
+        this.responseObserver = responseObserver;
         initFxml();
         this.drawer = new Drawer(backgroundCanvas, canvas);
+        initGameEnvironment();
     }
 
     private void initFxml() {
@@ -80,7 +90,7 @@ public class GameWindowController {
 
         animationTimeline = new Timeline(new KeyFrame(
                 new Duration(1),
-                actionEvent -> drawer.drawSnakes(responseHandler.getSnakes())));
+                actionEvent -> drawer.drawSnakes(responseObserver.getSnakes())));
 
         animationTimeline.setCycleCount(Animation.INDEFINITE);
     }
@@ -96,20 +106,10 @@ public class GameWindowController {
     public void setBackgroundColors(Color[] colors) {
         drawer.setBackgroundColors(colors);
     }
+
     public void setSize(int size) {
         drawer.setCubesCount(size);
     }
-
-    @FXML
-    private Pane gamePane;
-    @FXML
-    private Button startButton;
-    @FXML
-    private Button exitButton;
-    @FXML
-    private Canvas backgroundCanvas;
-    @FXML
-    private Canvas canvas;
 
     @FXML
     public void toRooms() {
