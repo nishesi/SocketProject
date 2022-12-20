@@ -1,6 +1,7 @@
 package ru.itis.snaky.server.core;
 
 import lombok.Builder;
+import ru.itis.snaky.protocol.message.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -36,11 +37,16 @@ public class ServerSocketImpl implements Server {
 
     public void handleConnection(Socket socket) throws ServerException {
         try {
-            Connection connection = new Connection(socket);
+            Connection connection = new Connection(this, socket);
             connections.add(connection);
             connection.start();
         } catch (IOException e) {
             throw new ServerException("Unable to handle connection", e);
         }
+    }
+
+    @Override
+    public List<Connection> getConnections() {
+        return this.connections;
     }
 }

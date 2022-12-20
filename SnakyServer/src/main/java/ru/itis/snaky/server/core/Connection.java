@@ -15,14 +15,19 @@ public class Connection extends Thread {
 
     private UUID id;
 
+    private String playerNickname;
+
+    private Server server;
+
     @Getter
     private InputStreamThread inputStream;
 
     @Getter
     private OutputStreamThread outputStream;
 
-    public Connection(Socket socket) throws IOException {
+    public Connection(Server server, Socket socket) throws IOException {
         this.id = UUID.randomUUID();
+        this.server = server;
         inputStream = new InputStreamThread(socket.getInputStream());
         outputStream = new OutputStreamThread(socket.getOutputStream());
 
@@ -35,8 +40,17 @@ public class Connection extends Thread {
         while (true) {
             inputStream.getMessage().ifPresent(message -> {
                 ServerEventListener listener = AbstractServerEventListener.get(message.getMessageType());
-                listener.handle(this);
+                listener.init(this.server);
+                listener.handle(this, message);
             });
         }
+    }
+
+    public String getPlayerNickname() {
+        return this.playerNickname;
+    }
+
+    public void setPlayerNickname(String nickname) {
+        this.playerNickname = nickname;
     }
 }
