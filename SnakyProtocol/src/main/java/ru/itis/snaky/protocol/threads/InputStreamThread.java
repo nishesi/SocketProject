@@ -1,11 +1,11 @@
 package ru.itis.snaky.protocol.threads;
 
+import ru.itis.snaky.protocol.exceptions.IOThreadException;
 import ru.itis.snaky.protocol.io.ProtocolInputStream;
 import ru.itis.snaky.protocol.message.Message;
 
 import java.io.InputStream;
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Queue;
 
 public class InputStreamThread extends Thread {
@@ -30,15 +30,29 @@ public class InputStreamThread extends Thread {
         }
     }
 
-    public Optional<Message> getMessage() {
+    public Message getMessage() {
         if (this.isAlive()) {
             synchronized (messages) {
-                return Optional.ofNullable(messages.poll());
+                waitMessages();
+                return messages.poll();
             }
         }
-        throw new RuntimeException(getName() + " finished");
+        throw new IOThreadException("can't read: " + getName() + " finished.");
     }
 
+    private void waitMessages() {
+        while (messages.isEmpty()) {
+            try {
+                messages.wait(10);
+            } catch (InterruptedException e) {
+                throw new IOThreadException("synchronization exception.", e);
+            }
+        }
+    }
+
+    /**
+     * InputStream not closed after finishing
+     */
     public void finish() {
         isRunning = false;
     }

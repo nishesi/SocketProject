@@ -1,5 +1,6 @@
 package ru.itis.snaky.protocol.threads;
 
+import ru.itis.snaky.protocol.exceptions.IOThreadException;
 import ru.itis.snaky.protocol.io.ProtocolOutputStream;
 import ru.itis.snaky.protocol.message.Message;
 
@@ -7,12 +8,7 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * OutputStream not closed after finishing
- */
-
 public class OutputStreamThread extends Thread {
-    private static long SEND_TIMEOUT = 10;
     private final ProtocolOutputStream protocolOutputStream;
     private final Queue<Message> messageQueue;
     private boolean isRunning;
@@ -23,40 +19,43 @@ public class OutputStreamThread extends Thread {
         setName("Protocol-OutputStream-Thread");
     }
 
-    private static void setSendTimeout(long millis) {
-        if (millis <= 0) {
-            throw new IllegalArgumentException("illegal time = " + millis);
-        }
-        SEND_TIMEOUT = millis;
-    }
-
     @Override
     public void run() {
         isRunning = true;
         while (isRunning) {
             synchronized (messageQueue) {
+                waitMessages();
                 while (!messageQueue.isEmpty()) {
                     protocolOutputStream.writeMessage(messageQueue.poll());
                 }
             }
+        }
+    }
+
+    private void waitMessages() {
+        if (messageQueue.isEmpty()) {
             try {
-                Thread.sleep(SEND_TIMEOUT);
+                messageQueue.wait();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                throw new IOThreadException("synchronization exception.", e);
             }
         }
     }
 
     public void send(Message message) {
-        if (this.isAlive()) {
-            synchronized (messageQueue) {
-                messageQueue.add(message);
-            }
-        } else {
-            throw new RuntimeException(getName() + " finished");
+        if (!this.isAlive()) {
+            throw new IOThreadException("can't send: " + getName() + " finished.");
+        }
+
+        synchronized (messageQueue) {
+            messageQueue.add(message);
+            messageQueue.notify();
         }
     }
 
+    /**
+     * OutputStream not closed after finishing
+     */
     public void finish() {
         isRunning = false;
     }
