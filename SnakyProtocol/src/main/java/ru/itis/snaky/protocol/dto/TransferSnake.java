@@ -6,13 +6,13 @@ import ru.itis.snaky.protocol.SnakySerializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransferSnake implements SnakySerializable {
+public class TransferSnake {
 
     private Cube[] bodyCubes;
 
     private String name;
 
-    private String color;
+    private TransferColor color;
 
     @Getter
     @RequiredArgsConstructor
