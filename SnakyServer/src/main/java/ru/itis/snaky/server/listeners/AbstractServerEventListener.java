@@ -22,8 +22,10 @@ public abstract class AbstractServerEventListener implements ServerEventListener
         switch (messageType) {
             case AUTHORIZATION:
                 return new PlayerAuthorizationListener();
+            case ROOMS_LIST:
+                return new ClientRequestRoomsListener();
             default:
-                throw new ProtocolIllegalMessageTypeException();
+                throw new ProtocolIllegalMessageTypeException("Illegal message type");
         }
     }
 }
