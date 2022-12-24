@@ -6,6 +6,7 @@ import ru.itis.snaky.protocol.threads.OutputStreamThread;
 import ru.itis.snaky.server.core.Connection;
 
 public class PlayerAuthorizationListener extends AbstractServerEventListener {
+
     public PlayerAuthorizationListener() {
         super(MessageType.AUTHORIZATION.getValue());
     }
