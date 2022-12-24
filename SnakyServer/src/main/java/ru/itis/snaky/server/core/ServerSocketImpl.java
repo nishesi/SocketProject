@@ -1,6 +1,8 @@
 package ru.itis.snaky.server.core;
 
 import lombok.Builder;
+import ru.itis.snaky.protocol.dto.TransferColor;
+import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.message.Message;
 
 import java.io.IOException;
@@ -14,9 +16,13 @@ import java.util.List;
 public class ServerSocketImpl implements Server {
 
     private short port;
+
     private ServerSocket server;
 
     private List<Connection> connections;
+
+    private TransferRoom[] rooms;
+
     private boolean isStarted;
 
     @Override
@@ -24,6 +30,7 @@ public class ServerSocketImpl implements Server {
         try {
             server = new ServerSocket(port);
             connections = new ArrayList<>();
+            initRooms();
             isStarted = true;
 
             while (true) {
@@ -45,8 +52,27 @@ public class ServerSocketImpl implements Server {
         }
     }
 
+    public void initRooms() {
+        rooms = new TransferRoom[5];
+        rooms[0] = new TransferRoom(0, "First", 0, 4, new TransferColor[0]);
+        rooms[1] = new TransferRoom(0, "Second", 0, 4, new TransferColor[0]);
+        rooms[2] = new TransferRoom(0, "Third", 0, 4, new TransferColor[0]);
+        rooms[3] = new TransferRoom(0, "Fourth", 0, 4, new TransferColor[0]);
+        rooms[4] = new TransferRoom(0, "Fifth", 0, 4, new TransferColor[0]);
+    }
+
     @Override
     public List<Connection> getConnections() {
         return this.connections;
+    }
+
+    @Override
+    public void removeConnection(Connection connection) {
+        this.connections.remove(connection);
+    }
+
+    @Override
+    public TransferRoom[] getRooms() {
+        return this.rooms;
     }
 }
