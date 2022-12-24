@@ -10,7 +10,7 @@ import java.util.Queue;
 
 public class InputStreamThread extends Thread {
     private final ProtocolInputStream protocolInputStream;
-    private final Queue<Message> messages;
+    private final Queue<Message<?>> messages;
     private boolean isRunning;
 
     public InputStreamThread(InputStream inputStream) {
@@ -23,14 +23,14 @@ public class InputStreamThread extends Thread {
     public void run() {
         isRunning = true;
         while (isRunning) {
-            Message message = protocolInputStream.readMessage();
+            Message<?> message = protocolInputStream.readMessage();
             synchronized (messages) {
                 messages.add(message);
             }
         }
     }
 
-    public Message getMessage() {
+    public Message<?> getMessage() {
         if (this.isAlive()) {
             synchronized (messages) {
                 waitMessages();

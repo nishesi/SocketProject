@@ -10,7 +10,7 @@ import java.util.Queue;
 
 public class OutputStreamThread extends Thread {
     private final ProtocolOutputStream protocolOutputStream;
-    private final Queue<Message> messageQueue;
+    private final Queue<Message<?>> messageQueue;
     private boolean isRunning;
 
     public OutputStreamThread(OutputStream outputStream) {
@@ -42,7 +42,7 @@ public class OutputStreamThread extends Thread {
         }
     }
 
-    public void send(Message message) {
+    public void send(Message<?> message) {
         if (!this.isAlive()) {
             throw new IOThreadException("can't send: " + getName() + " finished.");
         }
