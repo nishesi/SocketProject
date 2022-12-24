@@ -1,11 +1,11 @@
 package ru.itis.snaky.protocol.dto;
 
 import lombok.*;
-import ru.itis.snaky.protocol.SnakySerializable;
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+
+@Getter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor()
 public class TransferSnake {
 
     private Cube[] bodyCubes;

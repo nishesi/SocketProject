@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class TransferColor {
-    private short[] rgb = new short[3];
+    private final short[] rgb = new short[3];
 
     /**
      * @param r value should be between 0 and 255
@@ -54,7 +54,6 @@ public class TransferColor {
         validateDoubleValue(b);
         this.rgb[2] = (short) (b * 255);
     }
-
     private void validateValue(int value) {
         if (value < 0 || value > 255) {
             throw new IllegalArgumentException("Invalid value: " + value + ", expected 0 <= value <= 255");
@@ -65,43 +64,5 @@ public class TransferColor {
         if (value < 0 || value > 1) {
             throw new IllegalArgumentException("Invalid value: " + value + ", expected 0 <= value <= 1");
         }
-    }
-
-    public static int byteLength() {
-        return 3*2;
-    }
-
-    public void serialize(int[] arr, int offset) {
-        if (arr.length < offset + byteLength()) {
-            throw new IllegalArgumentException("Not enough length to serialize");
-        }
-
-        arr[offset] = (byte) (rgb[0] >> 8);
-        arr[offset + 1] = (byte) (rgb[0]);
-
-        arr[offset + 2] = (byte) (rgb[1] >> 8);
-        arr[offset + 3] = (byte) (rgb[1]);
-
-        arr[offset + 4] = (byte) (rgb[2] >> 8);
-        arr[offset + 5] = (byte) (rgb[2]);
-    }
-
-    public int[] serialize() {
-        int[] arr = new int[byteLength()];
-
-        serialize(arr, 0);
-
-        return arr;
-    }
-
-    public static TransferColor deserialize(int[] arr, int offset) {
-        if (arr.length < offset + byteLength()) {
-            throw new IllegalArgumentException("invalid length = " + arr.length + " expected = " + byteLength());
-        }
-
-        return new TransferColor(
-                arr[offset] << 8 | arr[offset + 1],
-                arr[offset + 2] << 8 | arr[offset + 3],
-                arr[offset + 4] << 8 | arr[offset + 5]);
     }
 }
