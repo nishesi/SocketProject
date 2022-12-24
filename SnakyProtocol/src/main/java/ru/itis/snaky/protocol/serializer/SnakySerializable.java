@@ -1,4 +1,4 @@
-package ru.itis.snaky.protocol;
+package ru.itis.snaky.protocol.serializer;
 
 import java.io.Serializable;
 
