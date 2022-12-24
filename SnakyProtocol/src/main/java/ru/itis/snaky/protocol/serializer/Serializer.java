@@ -42,13 +42,13 @@ public class Serializer {
     public static <T> void serialize(OutputStream out, T element) {
         try {
             out.write(SERIALIZATION_VERSION);
+            writeElement(out, element);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ProtocolSerializationException("serialization failed", e);
         }
-        writeElement(out, element);
     }
 
-    private static <T> void writeElement(OutputStream out, T element) {
+    private static <T> void writeElement(OutputStream out, T element) throws IOException {
         validate(out, element);
         validate(element.getClass());
 
@@ -58,8 +58,8 @@ public class Serializer {
             for (Field field : fields) {
                 writeField(out, element, field);
             }
-        } catch (IOException | IllegalAccessException e) {
-            throw new ProtocolSerializationException("serialization failed", e);
+        } catch (IllegalAccessException e) {
+            throw new ProtocolSerializationException("Access failed", e);
         }
     }
 
@@ -86,7 +86,9 @@ public class Serializer {
                 .toArray(Field[]::new);
     }
 
-    private static <T> void writeField(OutputStream out, T element, Field field) throws IOException, IllegalAccessException {
+    private static <T> void writeField(OutputStream out, T element, Field field)
+            throws IOException, IllegalAccessException {
+
         field.setAccessible(true);
         validateField(field.get(element));
 
@@ -104,6 +106,7 @@ public class Serializer {
 
     private static <T> void writePrimitive(OutputStream out, T element, Field field)
             throws IllegalAccessException, IOException {
+
         Class<?> type = field.getType();
 
         if (type.equals(Boolean.TYPE)) {
@@ -130,7 +133,9 @@ public class Serializer {
         }
     }
 
-    private static <T> void writeArray(OutputStream out, T element, Field field) throws IllegalAccessException, IOException {
+    private static <T> void writeArray(OutputStream out, T element, Field field)
+            throws IllegalAccessException, IOException {
+
         Object arr = field.get(element);
         int len = Array.getLength(arr);
 
@@ -142,7 +147,9 @@ public class Serializer {
         }
     }
 
-    private static <T> void writeObject(OutputStream out, T element, Field field) throws IllegalAccessException, IOException {
+    private static <T> void writeObject(OutputStream out, T element, Field field)
+            throws IllegalAccessException, IOException {
+
         if (field.getType().equals(String.class)) {
 
             String str = (String) field.get(element);
@@ -172,34 +179,39 @@ public class Serializer {
      */
 
     public static <T> T deserialize(InputStream in, Class<T> tClass) {
-        validateVersion(in);
-        return readElement(in, tClass);
+        try {
+            validateVersion(in);
+            return readElement(in, tClass);
+        } catch (IOException e) {
+            throw new ProtocolSerializationException("deserialization failed", e);
+        }
     }
 
-    private static void validateVersion(InputStream in) {
+    private static void validateVersion(InputStream in) throws IOException {
         DataInputStream dataInputStream = new DataInputStream(in);
-        try {
-            byte version = dataInputStream.readByte();
-            if (version != SERIALIZATION_VERSION) {
-                throw new ProtocolSerializationException("Unsupported serialization version: " +
-                        "current: " + SERIALIZATION_VERSION +
-                        ", required: " + version);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        byte version = dataInputStream.readByte();
+        if (version != SERIALIZATION_VERSION) {
+            throw new ProtocolSerializationException("Unsupported serialization version: " +
+                    "current: " + SERIALIZATION_VERSION +
+                    ", required: " + version);
         }
 
+
     }
 
-    private static <T> T readElement(InputStream in, Class<T> tClass) {
+    private static <T> T readElement(InputStream in, Class<T> tClass) throws IOException {
         validate(tClass);
         Field[] fields = getFilteredSortedFields(tClass.getDeclaredFields());
         T obj = createEmptyObject(tClass);
-
-        for (Field field : fields) {
-            injectField(in, field, obj);
+        try {
+            for (Field field : fields) {
+                injectField(in, field, obj);
+            }
+            return obj;
+        } catch (IllegalAccessException e) {
+            throw new ProtocolSerializationException("Access failed", e);
         }
-        return obj;
     }
 
     private static <T> T createEmptyObject(Class<T> tClass) {
@@ -213,7 +225,7 @@ public class Serializer {
             if (pType.equals(Boolean.TYPE)) {
                 params.add(false);
             } else {
-                params.add((pType.isPrimitive()) ? 0 : null);
+                params.add((pType.isPrimitive()) ? (byte) 0 : null);
             }
         }
 
@@ -225,27 +237,25 @@ public class Serializer {
         }
     }
 
-    private static <T> void injectField(InputStream in, Field field, T element) {
-        try {
+    private static <T> void injectField(InputStream in, Field field, T element)
+            throws IOException, IllegalAccessException {
 
-            field.setAccessible(true);
-            if (field.getType().isPrimitive()) {
-                injectPrimitive(in, field, element);
+        field.setAccessible(true);
+        if (field.getType().isPrimitive()) {
+            injectPrimitive(in, field, element);
 
-            } else if (field.getType().isArray()) {
-                injectArrayElements(in, field, element);
+        } else if (field.getType().isArray()) {
+            injectArrayElements(in, field, element);
 
-            } else {
-                injectObject(in, field, element);
-            }
-            field.setAccessible(false);
-
-        } catch (IOException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } else {
+            injectObject(in, field, element);
         }
+        field.setAccessible(false);
     }
 
-    private static <T> void injectPrimitive(InputStream in, Field field, T element) throws IOException, IllegalAccessException {
+    private static <T> void injectPrimitive(InputStream in, Field field, T element)
+            throws IOException, IllegalAccessException {
+
         Type type = field.getType();
         DataInputStream dataInputStream = new DataInputStream(in);
 
@@ -268,7 +278,9 @@ public class Serializer {
         }
     }
 
-    private static <T> void injectArrayElements(InputStream in, Field field, T element) throws IOException, IllegalAccessException {
+    private static <T> void injectArrayElements(InputStream in, Field field, T element)
+            throws IOException, IllegalAccessException {
+
         DataInputStream dataInputStream = new DataInputStream(in);
         int len = dataInputStream.readInt();
 
@@ -281,7 +293,9 @@ public class Serializer {
         field.set(element, arr);
     }
 
-    private static <T> void injectObject(InputStream in, Field field, T element) throws IOException, IllegalAccessException {
+    private static <T> void injectObject(InputStream in, Field field, T element)
+            throws IOException, IllegalAccessException {
+
         if (field.getType().equals(String.class)) {
             int len = in.read() << 24 |
                     in.read() << 16 |
