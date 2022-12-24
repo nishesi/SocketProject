@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import static ru.itis.snaky.protocol.Properties.SERIALIZATION_VERSION;
+
 /**
  * Serializer is a class that have static methods for serialization and deserialization of object.
  * This class can be used if you definitely know what object serialized in these bytes.
@@ -19,11 +21,9 @@ import java.util.List;
  */
 
 public class Serializer {
-    private static final byte SERIALIZATION_VERSION = 1;
-
     public static <T> byte[] serialize(T element) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        writeElement(byteArrayOutputStream, element);
+        serialize(byteArrayOutputStream, element);
         return byteArrayOutputStream.toByteArray();
     }
 
@@ -153,6 +153,11 @@ public class Serializer {
         } else {
             writeElement(out, field.get(element));
         }
+    }
+
+    public static <T> T deserialize(byte[] arr, Class<T> tClass) {
+        ByteArrayInputStream in = new ByteArrayInputStream(arr);
+        return deserialize(in, tClass);
     }
 
     /**

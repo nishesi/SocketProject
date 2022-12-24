@@ -3,36 +3,33 @@ package ru.itis.snaky.protocol.io;
 import lombok.AllArgsConstructor;
 import ru.itis.snaky.protocol.exceptions.ProtocolSerializationException;
 import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.serializer.Serializer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+
+import static ru.itis.snaky.protocol.Properties.PROTOCOL_VERSION;
 
 @AllArgsConstructor
 public class ProtocolOutputStream extends OutputStream {
     private final OutputStream outputStream;
 
-    public void writeMessage(Message message) throws ProtocolSerializationException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    public void writeMessage(Message<?> message) throws ProtocolSerializationException {
 
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(buffer)) {
+        byte[] params = Serializer.serialize(message.getParameters());
+        ByteBuffer length = ByteBuffer.allocate(4).putInt(params.length);
 
-            objectOutputStream.writeObject(message);
-            byte[] serializedMessage = buffer.toByteArray();
-
+        try {
+            outputStream.write(PROTOCOL_VERSION);
             outputStream.write(message.getMessageType().getValue());
-            outputStream.write(serializedMessage.length >> 24);
-            outputStream.write(serializedMessage.length >> 16);
-            outputStream.write(serializedMessage.length >> 8);
-            outputStream.write(serializedMessage.length);
-            outputStream.write(serializedMessage);
+            outputStream.write(length.array());
+            outputStream.write(params);
+
             outputStream.flush();
-
         } catch (IOException e) {
-            throw new ProtocolSerializationException(e);
+            throw new RuntimeException(e);
         }
-
     }
 
     @Override

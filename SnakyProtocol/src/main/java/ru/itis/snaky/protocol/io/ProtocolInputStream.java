@@ -1,49 +1,55 @@
 package ru.itis.snaky.protocol.io;
 
 import lombok.AllArgsConstructor;
-import ru.itis.snaky.protocol.exceptions.ProtocolIllegalMessageTypeException;
 import ru.itis.snaky.protocol.exceptions.ProtocolSerializationException;
 import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.protocol.message.MessageType;
+import ru.itis.snaky.protocol.serializer.Serializer;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import static ru.itis.snaky.protocol.Properties.PROTOCOL_VERSION;
 
 
 @AllArgsConstructor
 public class ProtocolInputStream extends InputStream {
     private final InputStream inputStream;
 
-    public Message readMessage() throws ProtocolSerializationException {
+    public Message<?> readMessage() throws ProtocolSerializationException {
         try {
+            validateVersion();
 
-            int messageType = inputStream.read();
+            MessageType messageType = MessageType.fromByte((byte) inputStream.read());
 
-            if ((byte) messageType != messageType) {
-                throw new ProtocolIllegalMessageTypeException("illegal message type");
-            }
-
-            int length = inputStream.read() << 24 |
+            int paramsLength = inputStream.read() << 24 |
                     inputStream.read() << 16 |
                     inputStream.read() << 8 |
                     inputStream.read();
+            byte[] params = new byte[paramsLength];
 
-            byte[] bytes = new byte[length];
-            int realLength = inputStream.read(bytes);
-
-            if (realLength != length) {
-                throw new ProtocolSerializationException("expected " + length + " bytes, found " + realLength);
+            int readLength = inputStream.read(params);
+            if (readLength != paramsLength) {
+                throw new ProtocolSerializationException("params length mismatch: " +
+                        "expected " + paramsLength + ", found " + readLength);
             }
 
-            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            Message message = (Message) objectInputStream.readObject();
+            return new Message<>(
+                    messageType,
+                    Serializer.deserialize(params, messageType.getParameterClass()));
 
-            if ((byte) messageType != message.getMessageType().getValue()) {
-                throw new ProtocolSerializationException("expected " + messageType + " type, found " + message.getMessageType().getValue());
-            }
+        } catch (IOException e) {
+            throw new ProtocolSerializationException("read failed", e);
+        }
+    }
 
-            return message;
+    private void validateVersion() throws IOException {
+        byte version = (byte) inputStream.read();
 
-        } catch (ClassNotFoundException | IOException e) {
-            throw new ProtocolSerializationException(e);
+        if (version != PROTOCOL_VERSION) {
+            throw new ProtocolSerializationException("unsupported protocol version: " +
+                    "expected " + PROTOCOL_VERSION + ", found " + version);
         }
     }
 
