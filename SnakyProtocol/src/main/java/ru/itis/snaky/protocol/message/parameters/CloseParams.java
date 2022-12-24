@@ -1,4 +1,4 @@
 package ru.itis.snaky.protocol.message.parameters;
 
-public class ExitPar extends MessageParameter {
+public class CloseParams extends MessageParams {
 }

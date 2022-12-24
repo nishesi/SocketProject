@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-public class AuthMessPar extends MessageParameter {
+public class AuthenticationParams extends MessageParams {
     private String nickname;
 }

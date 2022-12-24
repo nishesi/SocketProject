@@ -17,7 +17,7 @@ public class ProtocolOutputStream extends OutputStream {
 
     public void writeMessage(Message<?> message) throws ProtocolSerializationException {
 
-        byte[] params = Serializer.serialize(message.getParameters());
+        byte[] params = Serializer.serialize(message.getParams());
         ByteBuffer length = ByteBuffer.allocate(4).putInt(params.length);
 
         try {
