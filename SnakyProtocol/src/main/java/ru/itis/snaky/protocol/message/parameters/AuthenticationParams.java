@@ -7,8 +7,9 @@ import lombok.ToString;
 
 @Getter
 @ToString
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class AuthenticationParams extends MessageParams {
     private String nickname;
+    private boolean success;
 }
