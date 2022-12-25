@@ -19,6 +19,8 @@ public class Connection extends Thread {
 
     private Server server;
 
+    private Socket socket;
+
     @Getter
     private InputStreamThread inputStream;
 
@@ -28,6 +30,7 @@ public class Connection extends Thread {
     public Connection(Server server, Socket socket) throws IOException {
         this.id = UUID.randomUUID();
         this.server = server;
+        this.socket = socket;
         inputStream = new InputStreamThread(socket.getInputStream());
         outputStream = new OutputStreamThread(socket.getOutputStream());
 
@@ -38,8 +41,7 @@ public class Connection extends Thread {
     @Override
     public void run() {
         while (true) {
-            Message message = inputStream.getMessage();
-            System.out.println(message.getMessageType());
+            Message<?> message = inputStream.getMessage();
             ServerEventListener listener = AbstractServerEventListener.get(message.getMessageType());
             listener.init(this.server);
             listener.handle(this, message);
@@ -52,5 +54,15 @@ public class Connection extends Thread {
 
     public void setPlayerNickname(String nickname) {
         this.playerNickname = nickname;
+    }
+
+    public void close() {
+        this.inputStream.finish();
+        this.outputStream.finish();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
