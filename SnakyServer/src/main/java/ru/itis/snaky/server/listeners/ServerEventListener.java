@@ -7,5 +7,5 @@ import ru.itis.snaky.server.core.Server;
 public interface ServerEventListener {
     void init(Server server);
 
-    void handle(Connection connection, Message message);
+    void handle(Connection connection, Message<?> message);
 }
