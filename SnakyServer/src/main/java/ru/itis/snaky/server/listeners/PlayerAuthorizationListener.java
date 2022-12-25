@@ -16,7 +16,7 @@ public class PlayerAuthorizationListener extends AbstractServerEventListener {
 
         AuthenticationParams params = (AuthenticationParams) message.getParams();
 
-        if (!validateNickname(params.getNickname())) {
+        if (!validateNickname(connection, params.getNickname())) {
             connection.getOutputStream().send(new Message<>(MessageType.AUTHORIZATION, new AuthenticationParams(params.getNickname(), false)));
         } else {
             connection.setPlayerNickname(params.getNickname());
@@ -24,11 +24,13 @@ public class PlayerAuthorizationListener extends AbstractServerEventListener {
         }
     }
 
-    private boolean validateNickname(String nickname) {
+    private boolean validateNickname(Connection connection, String nickname) {
 
-        for (Connection connection : this.server.getConnections()) {
-            if (nickname.equals(connection.getPlayerNickname())) {
-                return false;
+        for (Connection player : this.server.getConnections()) {
+            if (!connection.getUuid().equals(player.getUuid())) {
+                if (nickname.equals(player.getPlayerNickname())) {
+                    return false;
+                }
             }
         }
 
