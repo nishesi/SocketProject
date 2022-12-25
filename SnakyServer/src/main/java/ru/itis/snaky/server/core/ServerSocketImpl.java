@@ -1,9 +1,9 @@
 package ru.itis.snaky.server.core;
 
 import lombok.Builder;
-import ru.itis.snaky.protocol.dto.TransferColor;
-import ru.itis.snaky.protocol.dto.TransferRoom;
-import ru.itis.snaky.protocol.message.Message;
+import ru.itis.snaky.server.dto.Color;
+import ru.itis.snaky.server.dto.Room;
+import ru.itis.snaky.server.game.RoomCondition;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -21,7 +21,7 @@ public class ServerSocketImpl implements Server {
 
     private List<Connection> connections;
 
-    private TransferRoom[] rooms;
+    private Room[] rooms;
 
     private boolean isStarted;
 
@@ -53,12 +53,12 @@ public class ServerSocketImpl implements Server {
     }
 
     public void initRooms() {
-        rooms = new TransferRoom[5];
-        rooms[0] = new TransferRoom(50, "First", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
-        rooms[1] = new TransferRoom(50, "Second", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
-        rooms[2] = new TransferRoom(50, "Third", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
-        rooms[3] = new TransferRoom(50, "Fourth", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
-        rooms[4] = new TransferRoom(50, "Fifth", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
+        rooms = new Room[5];
+        rooms[0] = new Room(20, "First", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[0]));
+        rooms[1] = new Room(20, "Second", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[1]));
+        rooms[2] = new Room(20, "Third", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[2]));
+        rooms[3] = new Room(20, "Fourth", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[3]));
+        rooms[4] = new Room(20, "Fifth", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[4]));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ServerSocketImpl implements Server {
     }
 
     @Override
-    public TransferRoom[] getRooms() {
+    public Room[] getRooms() {
         return this.rooms;
     }
 }
