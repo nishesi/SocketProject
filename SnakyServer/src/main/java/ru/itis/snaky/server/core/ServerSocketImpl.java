@@ -54,11 +54,11 @@ public class ServerSocketImpl implements Server {
 
     public void initRooms() {
         rooms = new TransferRoom[5];
-        rooms[0] = new TransferRoom(0, "First", 0, 4, new TransferColor[0]);
-        rooms[1] = new TransferRoom(0, "Second", 0, 4, new TransferColor[0]);
-        rooms[2] = new TransferRoom(0, "Third", 0, 4, new TransferColor[0]);
-        rooms[3] = new TransferRoom(0, "Fourth", 0, 4, new TransferColor[0]);
-        rooms[4] = new TransferRoom(0, "Fifth", 0, 4, new TransferColor[0]);
+        rooms[0] = new TransferRoom(50, "First", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
+        rooms[1] = new TransferRoom(50, "Second", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
+        rooms[2] = new TransferRoom(50, "Third", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
+        rooms[3] = new TransferRoom(50, "Fourth", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
+        rooms[4] = new TransferRoom(50, "Fifth", 0, 4, new TransferColor[]{new TransferColor(10, 20, 39)});
     }
 
     @Override
