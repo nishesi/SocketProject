@@ -2,7 +2,7 @@ package ru.itis.snaky.server.listeners;
 
 import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.message.MessageType;
-import ru.itis.snaky.protocol.threads.OutputStreamThread;
+import ru.itis.snaky.protocol.message.parameters.AuthenticationParams;
 import ru.itis.snaky.server.core.Connection;
 
 public class PlayerAuthorizationListener extends AbstractServerEventListener {
@@ -12,12 +12,15 @@ public class PlayerAuthorizationListener extends AbstractServerEventListener {
     }
 
     @Override
-    public void handle(Connection connection, Message message) {
-        if (!validateNickname((String) message.getParameter(0))) {
-            connection.getOutputStream().send(new Message(MessageType.AUTHORIZATION, new Object[]{"0"}));
+    public void handle(Connection connection, Message<?> message) {
+
+        AuthenticationParams params = (AuthenticationParams) message.getParams();
+
+        if (!validateNickname(params.getNickname())) {
+            connection.getOutputStream().send(new Message<>(MessageType.AUTHORIZATION, new AuthenticationParams(params.getNickname(), false)));
         } else {
-            connection.setPlayerNickname((String) message.getParameter(0));
-            connection.getOutputStream().send(new Message(MessageType.AUTHORIZATION, new Object[]{"1"}));
+            connection.setPlayerNickname(params.getNickname());
+            connection.getOutputStream().send(new Message<>(MessageType.AUTHORIZATION, new AuthenticationParams(params.getNickname(), true)));
         }
     }
 
