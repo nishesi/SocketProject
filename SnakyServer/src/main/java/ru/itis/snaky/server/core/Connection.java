@@ -1,9 +1,11 @@
 package ru.itis.snaky.server.core;
 
 import lombok.Getter;
+import lombok.Setter;
 import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.threads.InputStreamThread;
 import ru.itis.snaky.protocol.threads.OutputStreamThread;
+import ru.itis.snaky.server.dto.Room;
 import ru.itis.snaky.server.listeners.AbstractServerEventListener;
 import ru.itis.snaky.server.listeners.ServerEventListener;
 
@@ -13,9 +15,16 @@ import java.util.UUID;
 
 public class Connection extends Thread {
 
-    private UUID id;
+    @Getter
+    private UUID uuid;
 
+    @Getter
+    @Setter
     private String playerNickname;
+
+    @Getter
+    @Setter
+    private Room room;
 
     private Server server;
 
@@ -28,9 +37,10 @@ public class Connection extends Thread {
     private OutputStreamThread outputStream;
 
     public Connection(Server server, Socket socket) throws IOException {
-        this.id = UUID.randomUUID();
+        this.uuid = UUID.randomUUID();
         this.server = server;
         this.socket = socket;
+
         inputStream = new InputStreamThread(socket.getInputStream());
         outputStream = new OutputStreamThread(socket.getOutputStream());
 
@@ -48,19 +58,12 @@ public class Connection extends Thread {
         }
     }
 
-    public String getPlayerNickname() {
-        return this.playerNickname;
-    }
-
-    public void setPlayerNickname(String nickname) {
-        this.playerNickname = nickname;
-    }
-
     public void close() {
         this.inputStream.finish();
         this.outputStream.finish();
         try {
             socket.close();
+            server.removeConnection(this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
