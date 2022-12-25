@@ -1,12 +1,15 @@
 package ru.itis.snaky.client.handlers;
 
-import ru.itis.snaky.client.MessageHandler;
 import ru.itis.snaky.client.dto.Fruit;
 import ru.itis.snaky.client.dto.Room;
 import ru.itis.snaky.client.dto.Snake;
+import ru.itis.snaky.client.dto.converters.Converters;
 import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.message.MessageType;
+import ru.itis.snaky.protocol.message.parameters.MessageParams;
+import ru.itis.snaky.protocol.message.parameters.RoomConditionParams;
+import ru.itis.snaky.protocol.message.parameters.RoomsListParams;
 import ru.itis.snaky.protocol.threads.InputStreamThread;
 
 import java.util.*;
@@ -21,7 +24,7 @@ public class ResponseObserver extends Thread {
     private final List<Room> rooms;
     private final List<Snake> snakes;
     private final List<Fruit> fruits;
-    private final Map<MessageType, MessageHandler> handlers;
+    private final Map<MessageType, MessageHandler<?>> handlers;
     private boolean isRunning;
 
     public ResponseObserver(InputStreamThread inputStreamThread) {
@@ -36,25 +39,27 @@ public class ResponseObserver extends Thread {
     }
 
     private void initDefaultHandlers() {
-        handlers.put(MessageType.ROOMS_LIST, message -> {
+        handlers.put(MessageType.ROOMS_LIST, (MessageHandler<RoomsListParams>) params -> {
             synchronized (rooms) {
                 rooms.clear();
-                List<TransferRoom> transferRooms = (List<TransferRoom>) (message.getParameter(0));
+                TransferRoom[] transferRooms = params.getRooms();
 
-                transferRooms.stream()
-                        .map(transferRoom -> new Room(transferRoom.getName(), transferRoom.getPlayers()))
+                Arrays.stream(transferRooms)
+                        .map(Converters::from)
                         .forEach(rooms::add);
             }
         });
 
-        handlers.put(MessageType.ROOM_CONDITION, message -> {
+        handlers.put(MessageType.ROOM_CONDITION, (MessageHandler<RoomConditionParams>) message -> {
             synchronized (snakes) {
                 snakes.clear();
-                snakes.addAll((List<Snake>) (message.getParameter(0)));
+                //todo addition
+//                snakes.addAll((List<Snake>) (message.getParameter(0)));
             }
             synchronized (fruits) {
                 fruits.clear();
-                fruits.addAll((List<Fruit>) (message.getParameter(1)));
+                //todo addition
+//                fruits.addAll((List<Fruit>) (message.getParameter(1)));
             }
         });
     }
@@ -64,19 +69,20 @@ public class ResponseObserver extends Thread {
         isRunning = true;
 
         while (isRunning) {
-            inputStreamThread.getMessage().ifPresent(this::handleMessage);
+            handleMessage(inputStreamThread.getMessage());
         }
     }
 
-    private void handleMessage(Message message) {
+    private <T extends MessageParams> void handleMessage(Message<T> message) {
         try {
-            handlers.get(message.getMessageType()).handle(message);
+            MessageHandler<T> handler = (MessageHandler<T>) handlers.get(message.getMessageType());
+            handler.handle(message.getParams());
 
         } catch (ClassCastException ex) {
             ex.printStackTrace();
             throw new RuntimeException(
                     "Invalid message: message type = " + message.getMessageType().getValue() +
-                            " params = " + message.getParameters().toString());
+                            " params = " + message.getParams().toString());
         } catch (NullPointerException ex) {
             throw new RuntimeException(message.getMessageType().name() + " handler not initialized");
         }
@@ -107,7 +113,7 @@ public class ResponseObserver extends Thread {
         return toReturn;
     }
 
-    public void addHandler(MessageType messageType, MessageHandler messageHandler) {
+    public <T extends MessageParams> void addHandler(MessageType messageType, MessageHandler<T> messageHandler) {
         handlers.put(messageType, messageHandler);
     }
 }

@@ -3,10 +3,12 @@ package ru.itis.snaky.client.gui.controllers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -17,6 +19,7 @@ import ru.itis.snaky.client.gui.Direction;
 import ru.itis.snaky.client.gui.GameField;
 import ru.itis.snaky.client.handlers.ControlHandler;
 import ru.itis.snaky.client.handlers.ResponseObserver;
+import ru.itis.snaky.protocol.message.MessageType;
 
 import java.io.IOException;
 
@@ -24,6 +27,8 @@ public class GameWindowController {
     private final GameField gameField;
     private final ResponseObserver responseObserver;
     private final ControlHandler controlHandler;
+
+    private EventHandler<? super KeyEvent> keyEventHandler;
     private Timeline animationTimeline;
     @Setter
     private RoomsWindowController roomsWindowController;
@@ -34,13 +39,16 @@ public class GameWindowController {
     @FXML
     private Button exitButton;
 
-    public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler, ResponseObserver responseObserver, int cubesCount, Color[] backgroundColors) {
+    public GameWindowController(RoomsWindowController roomsWindowController, ControlHandler controlHandler,
+                                ResponseObserver responseObserver, int cubesCount, Color[] backgroundColors) {
         this.roomsWindowController = roomsWindowController;
         this.controlHandler = controlHandler;
         this.responseObserver = responseObserver;
         initFxml();
         this.gameField = new GameField(cubesCount, backgroundColors);
         gamePane.setCenter(gameField.getCanvasPane());
+        initKeyListener();
+        addControlHandlers();
         initGameEnvironment();
     }
 
@@ -58,8 +66,8 @@ public class GameWindowController {
         new Scene(gamePane);
     }
 
-    private void addKeyListener() {
-        gamePane.getScene().setOnKeyReleased(keyEvent -> {
+    private void initKeyListener() {
+        keyEventHandler = keyEvent -> {
 
             switch (keyEvent.getCode().getCode()) {
                 case 38:
@@ -79,6 +87,16 @@ public class GameWindowController {
                     controlHandler.sendDirection(Direction.LEFT);
                     break;
             }
+        };
+    }
+
+    private void addControlHandlers() {
+        responseObserver.addHandler(MessageType.START, message -> {
+            gamePane.getScene().setOnKeyPressed(keyEventHandler);
+        });
+
+        responseObserver.addHandler(MessageType.LOSING, message -> {
+            gamePane.getScene().removeEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler);
         });
     }
 

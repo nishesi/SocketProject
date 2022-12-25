@@ -2,6 +2,7 @@ package ru.itis.snaky.client.gui.controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,27 +11,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import ru.itis.snaky.client.dto.Room;
+import ru.itis.snaky.client.dto.converters.Converters;
 import ru.itis.snaky.client.gui.controllers.components.RoomViewController;
 import ru.itis.snaky.client.handlers.ControlHandler;
+import ru.itis.snaky.client.handlers.MessageHandler;
 import ru.itis.snaky.client.handlers.ResponseObserver;
 import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.message.MessageType;
+import ru.itis.snaky.protocol.message.parameters.ChosenRoomParams;
+import ru.itis.snaky.protocol.message.parameters.RoomsListParams;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class RoomsWindowController implements Initializable {
-    @FXML
-    public Button backButton;
-    @FXML
-    public Button updateRoomsButton;
     @Setter
     private ControlHandler controlHandler;
     @Setter
@@ -40,6 +39,11 @@ public class RoomsWindowController implements Initializable {
     @Getter
     @Setter
     private Pane roomsPane;
+    private ObservableList<Room> roomsList;
+    @FXML
+    public Button updateRoomsButton;
+    @FXML
+    public Button backButton;
     @FXML
     private ListView<Room> roomsListView;
 
@@ -47,15 +51,16 @@ public class RoomsWindowController implements Initializable {
     public void updateRooms() {
         controlHandler.requestRooms();
 
-        responseObserver.addHandler(MessageType.ROOMS_LIST, message -> {
-            List<Room> rooms = new ArrayList<>();
-            List<TransferRoom> transferRooms = (List<TransferRoom>) (message.getParameter(0));
+        responseObserver.addHandler(MessageType.ROOMS_LIST, (MessageHandler<RoomsListParams>) params -> {
 
-            transferRooms.stream()
-                    .map(transferRoom -> new Room(transferRoom.getName(), transferRoom.getPlayers()))
-                    .forEach(rooms::add);
+            TransferRoom[] transferRooms = params.getRooms();
 
-            Platform.runLater(() -> roomsListView.setItems(FXCollections.observableList(rooms)));
+            Platform.runLater(() -> {
+                roomsList.clear();
+                Arrays.stream(transferRooms)
+                        .map(Converters::from)
+                        .forEach(roomsList::add);
+            });
         });
     }
 
@@ -67,19 +72,13 @@ public class RoomsWindowController implements Initializable {
 
             Stage stage = (Stage) roomsListView.getScene().getWindow();
 
-            responseObserver.addHandler(MessageType.CHOSEN_ROOM, message -> {
+            responseObserver.addHandler(MessageType.CHOSEN_ROOM, (MessageHandler<ChosenRoomParams>) params -> {
                 Platform.runLater(() -> {
-                    if (message.getParameter(0).equals("1")) {
-                        //todo get from message cubescount and backgroundcolors
-                        int cubesCount = 12;
-                        Color[] backbroundColors = new Color[]{Color.FORESTGREEN, Color.GREEN};
+                    if (params.isSuccess()) {
+                        Pane pane = new GameWindowController(this, controlHandler, responseObserver,
+                                room.getSize(), room.getColorsArray()).getGamePane();
 
-                        stage.setScene(
-                                new GameWindowController(this, controlHandler, responseObserver,
-                                        cubesCount, backbroundColors)
-                                        .getGamePane()
-                                        .getScene());
-
+                        stage.setScene(pane.getScene());
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Can't enter room");
                         alert.show();
@@ -97,6 +96,8 @@ public class RoomsWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        roomsList = FXCollections.observableArrayList();
+        roomsListView.setItems(roomsList);
 
         roomsListView.setCellFactory(roomListView -> new ListCell<>() {
             @Override

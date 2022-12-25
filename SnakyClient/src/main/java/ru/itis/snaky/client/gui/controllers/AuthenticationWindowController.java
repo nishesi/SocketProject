@@ -10,8 +10,10 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import ru.itis.snaky.client.handlers.ControlHandler;
+import ru.itis.snaky.client.handlers.MessageHandler;
 import ru.itis.snaky.client.handlers.ResponseObserver;
 import ru.itis.snaky.protocol.message.MessageType;
+import ru.itis.snaky.protocol.message.parameters.AuthenticationParams;
 
 public class AuthenticationWindowController {
     @Setter
@@ -46,10 +48,10 @@ public class AuthenticationWindowController {
 
         Stage stage = (Stage) enterButton.getScene().getWindow();
 
-        responseObserver.addHandler(MessageType.AUTHORIZATION, message -> {
+        responseObserver.addHandler(MessageType.AUTHORIZATION,(MessageHandler<AuthenticationParams>) params -> {
 
             Platform.runLater(() -> {
-                if ((message.getParameter(0)).equals("1")) {
+                if (params.isSuccess()) {
 
                     stage.setScene(
                             roomsWindowController.getRoomsPane().getScene());
