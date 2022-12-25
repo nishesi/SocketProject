@@ -149,21 +149,6 @@ public class Serializer {
         }
     }
 
-//    private static <T> void writeObject(OutputStream out, T element, Field field)
-//            throws IllegalAccessException, IOException {
-//
-//        if (field.getType().equals(String.class)) {
-//
-//            String str = (String) field.get(element);
-//            ByteBuffer lenBuffer = ByteBuffer.allocate(4).putInt(str.length());
-//            out.write(lenBuffer.array());
-//            out.write(str.getBytes());
-//
-//        } else {
-//            writeElement(out, field.get(element));
-//        }
-//    }
-
     public static <T> T deserialize(byte[] arr, Class<T> tClass) {
         ByteArrayInputStream in = new ByteArrayInputStream(arr);
         return deserialize(in, tClass);
@@ -300,28 +285,4 @@ public class Serializer {
             throw new ProtocolSerializationException("something go wrong");
         }
     }
-
-//    private static <T> void injectObject(InputStream in, Field field, T element)
-//            throws IOException, IllegalAccessException {
-//
-//        if (field.getType().equals(String.class)) {
-//            int len = in.read() << 24 |
-//                    in.read() << 16 |
-//                    in.read() << 8 |
-//                    in.read();
-//            byte[] arr = new byte[len];
-//
-//            if (in.read(arr) != len) {
-//                throw new ProtocolSerializationException("Bytes ended");
-//            }
-//
-//            String str = new String(arr, StandardCharsets.UTF_8);
-//
-//            field.set(element, str);
-//        } else {
-//
-//            Object fieldObj = readElement(in, field.getType());
-//            field.set(element, fieldObj);
-//        }
-//    }
 }

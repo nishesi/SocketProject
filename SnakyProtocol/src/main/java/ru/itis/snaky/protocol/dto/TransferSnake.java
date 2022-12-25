@@ -15,6 +15,8 @@ public class TransferSnake {
     private TransferColor color;
 
     @Getter
+    @ToString
+    @EqualsAndHashCode
     @RequiredArgsConstructor
     public static class Cube {
         private final int x;
