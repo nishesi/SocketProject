@@ -14,6 +14,8 @@ public class TransferSnake {
 
     private TransferColor color;
 
+    private String direction;
+
     @Getter
     @ToString
     @EqualsAndHashCode
