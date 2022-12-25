@@ -26,6 +26,10 @@ public abstract class AbstractServerEventListener implements ServerEventListener
                 return new ClientRequestRoomsListener();
             case CHOSEN_ROOM:
                 return new PlayerChosenRoomListener();
+            case START:
+                return new PlayerStartGameListener();
+            case EXIT:
+                return new PlayerExitListener();
             default:
                 throw new ProtocolIllegalMessageTypeException("Illegal message type");
         }
