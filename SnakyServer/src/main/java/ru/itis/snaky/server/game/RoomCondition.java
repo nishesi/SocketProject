@@ -82,7 +82,8 @@ public class RoomCondition extends Thread {
         startCoordinates.add(new Cube(2, 0));
         startCoordinates.add(new Cube(1, 0));
         startCoordinates.add(new Cube(0, 0));
-        snakes.add(new Snake(startCoordinates, connection.getPlayerNickname(), new Color(123, 32, 33), "RIGHT"));
+        Random random = new Random();
+        snakes.add(new Snake(startCoordinates, connection.getPlayerNickname(), new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)), "RIGHT"));
     }
 
     public void regenerateFruit() {
@@ -98,12 +99,11 @@ public class RoomCondition extends Thread {
                 allCubes.remove(cube);
             }
         }
-        System.out.println(allCubes.size());
 
         Random random = new Random();
         int index = random.nextInt(allCubes.size());
 
-        fruit = new Fruit(allCubes.get(index).getX(), allCubes.get(index).getY(), new Color(0, 255, 255));
+        fruit = new Fruit(allCubes.get(index).getX(), allCubes.get(index).getY(), new Color(255, 255, 0));
     }
 
     public boolean checkForLosing(Snake snake) {
