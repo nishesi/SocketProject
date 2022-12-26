@@ -53,12 +53,34 @@ public class ServerSocketImpl implements Server {
     }
 
     public void initRooms() {
-        rooms = new Room[5];
-        rooms[0] = new Room(20, "First", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[0]));
-        rooms[1] = new Room(20, "Second", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[1]));
-        rooms[2] = new Room(20, "Third", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[2]));
-        rooms[3] = new Room(20, "Fourth", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[3]));
-        rooms[4] = new Room(20, "Fifth", 0, 4, new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)}, new RoomCondition(this, rooms[4]));
+        rooms = new Room[3];
+
+        rooms[0] = Room.builder()
+                .size(20)
+                .name("First")
+                .playersCount(0)
+                .capacity(4)
+                .colorsArray(new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)})
+                .build();
+        rooms[1] = Room.builder()
+                .size(20)
+                .name("Second")
+                .playersCount(0)
+                .capacity(4)
+                .colorsArray(new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)})
+                .build();
+        rooms[2] = Room.builder()
+                .size(20)
+                .name("Third")
+                .playersCount(0)
+                .capacity(4)
+                .colorsArray(new Color[]{new Color(10, 20, 39), new Color(40, 23, 150)})
+                .build();
+
+        for (Room room : rooms) {
+            room.setCondition(new RoomCondition(this, room));
+            room.getCondition().start();
+        }
     }
 
     @Override
