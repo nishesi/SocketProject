@@ -23,6 +23,7 @@ public class PlayerExitListener extends AbstractServerEventListener {
                 break;
             }
         }
+        connection.setRoom(null);
         room.setPlayersCount(room.getPlayersCount() - 1);
     }
 }
