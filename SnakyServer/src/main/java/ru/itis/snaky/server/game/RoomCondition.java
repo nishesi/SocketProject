@@ -19,13 +19,14 @@ import ru.itis.snaky.server.dto.converters.SnakeConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class RoomCondition extends Thread {
 
     @Getter
     private List<Snake> snakes;
 
-    private Fruit fruitPosition = new Fruit(5, 2, new Color(255, 255, 0));
+    private Fruit fruit;
 
     private Room room;
 
@@ -39,6 +40,7 @@ public class RoomCondition extends Thread {
 
     @Override
     public void run() {
+        regenerateFruit();
         while (true) {
             updateSnakes();
             sendCondition();
@@ -53,8 +55,9 @@ public class RoomCondition extends Thread {
     public void updateSnakes() {
 
         for (Snake snake : snakes) {
-            if (snake.getHead()[0] == fruitPosition.getX() && snake.getHead()[1] == fruitPosition.getY()) {
+            if (snake.getHead()[0] == fruit.getX() && snake.getHead()[1] == fruit.getY()) {
                 snake.increase();
+                regenerateFruit();
             }
             snake.move();
         }
@@ -63,7 +66,7 @@ public class RoomCondition extends Thread {
     public void sendCondition() {
         for (Connection connection : this.server.getConnections()) {
             if (connection.getRoom() != null && connection.getRoom().getName().equals(room.getName())) {
-                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(snakes.stream().map(SnakeConverter::from).toArray(TransferSnake[]::new), new TransferFruit[]{FruitConverter.from(fruitPosition)})));
+                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(snakes.stream().map(SnakeConverter::from).toArray(TransferSnake[]::new), new TransferFruit[]{FruitConverter.from(fruit)})));
             }
         }
     }
@@ -74,5 +77,25 @@ public class RoomCondition extends Thread {
         startCoordinates.add(new Integer[]{1, 0});
         startCoordinates.add(new Integer[]{0, 0});
         snakes.add(new Snake(startCoordinates, connection.getPlayerNickname(), new Color(123, 32, 33), "RIGHT"));
+    }
+
+    public void regenerateFruit() {
+        List<Integer[]> allCubes = new ArrayList<>();
+        for (int i = 0; i < room.getSize(); i++) {
+            for (int j = 0; j < room.getSize(); j++) {
+                allCubes.add(new Integer[]{i, j});
+            }
+        }
+
+        for (Snake snake : snakes) {
+            for (Integer[] pos : snake.getBodyCoordinates()) {
+                allCubes.remove(pos);
+            }
+        }
+
+        Random random = new Random();
+        int index = random.nextInt(allCubes.size());
+
+        fruit = new Fruit(allCubes.get(index)[0], allCubes.get(index)[1], new Color(0, 255, 255));
     }
 }
