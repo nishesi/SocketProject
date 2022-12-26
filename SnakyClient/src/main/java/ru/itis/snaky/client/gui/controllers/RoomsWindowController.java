@@ -53,7 +53,7 @@ public class RoomsWindowController implements Initializable {
 
         responseObserver.addHandler(MessageType.ROOMS_LIST, (MessageHandler<RoomsListParams>) params -> {
 
-            TransferRoom[] transferRooms = params.getRooms();
+            TransferRoom[] transferRooms = params.getTransferRooms();
 
             Platform.runLater(() -> {
                 roomsList.clear();

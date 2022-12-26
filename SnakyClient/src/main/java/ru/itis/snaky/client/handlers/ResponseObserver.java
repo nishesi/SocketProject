@@ -21,47 +21,26 @@ import java.util.*;
 
 public class ResponseObserver extends Thread {
     private final InputStreamThread inputStreamThread;
-    private final List<Room> rooms;
-    private final List<Snake> snakes;
-    private final List<Fruit> fruits;
     private final Map<MessageType, MessageHandler<?>> handlers;
     private boolean isRunning;
 
     public ResponseObserver(InputStreamThread inputStreamThread) {
         this.inputStreamThread = inputStreamThread;
         this.handlers = new HashMap<>();
-        this.rooms = new ArrayList<>();
-        this.snakes = new ArrayList<>();
-        this.fruits = new ArrayList<>();
         isRunning = false;
 
         initDefaultHandlers();
     }
 
     private void initDefaultHandlers() {
-        handlers.put(MessageType.ROOMS_LIST, (MessageHandler<RoomsListParams>) params -> {
-            synchronized (rooms) {
-                rooms.clear();
-                TransferRoom[] transferRooms = params.getRooms();
-
-                Arrays.stream(transferRooms)
-                        .map(Converters::from)
-                        .forEach(rooms::add);
-            }
-        });
-
-        handlers.put(MessageType.ROOM_CONDITION, (MessageHandler<RoomConditionParams>) message -> {
-            synchronized (snakes) {
-                snakes.clear();
-                //todo addition
-//                snakes.addAll((List<Snake>) (message.getParameter(0)));
-            }
-            synchronized (fruits) {
-                fruits.clear();
-                //todo addition
-//                fruits.addAll((List<Fruit>) (message.getParameter(1)));
-            }
-        });
+        for(MessageType messageType : MessageType.values()) {
+            handlers.put(messageType, new MessageHandler<MessageParams>() {
+                @Override
+                public void handle(MessageParams params) {
+                    System.out.println("handler not initialized: " + messageType);
+                }
+            });
+        }
     }
 
     @Override
@@ -74,6 +53,7 @@ public class ResponseObserver extends Thread {
     }
 
     private <T extends MessageParams> void handleMessage(Message<T> message) {
+        System.out.println(message);
         try {
             MessageHandler<T> handler = (MessageHandler<T>) handlers.get(message.getMessageType());
             handler.handle(message.getParams());
@@ -86,31 +66,6 @@ public class ResponseObserver extends Thread {
         } catch (NullPointerException ex) {
             throw new RuntimeException(message.getMessageType().name() + " handler not initialized");
         }
-    }
-
-    public List<Room> getRooms() {
-        synchronized (rooms) {
-
-            return new ArrayList<>(rooms);
-        }
-    }
-
-    public List<Snake> getSnakes() {
-        synchronized (snakes) {
-            return new ArrayList<>(snakes);
-        }
-    }
-
-    public List<Fruit> getFruits() {
-        synchronized (fruits) {
-            return getPropertyCopy(fruits);
-        }
-    }
-
-    private <T> List<T> getPropertyCopy(List<T> list) {
-        List<T> toReturn = new ArrayList<>();
-        Collections.copy(toReturn, list);
-        return toReturn;
     }
 
     public <T extends MessageParams> void addHandler(MessageType messageType, MessageHandler<T> messageHandler) {

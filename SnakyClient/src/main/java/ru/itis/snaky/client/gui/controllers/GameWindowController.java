@@ -1,6 +1,5 @@
 package ru.itis.snaky.client.gui.controllers;
 
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -113,11 +112,11 @@ public class GameWindowController {
 
     private void initGameEnvironment() {
         responseObserver.addHandler(MessageType.ROOM_CONDITION, (MessageHandler<RoomConditionParams>) params -> {
-            List<Snake> snakeList = Arrays.stream(params.getSnakes()).map(Converters::from).collect(Collectors.toList());
+            List<Snake> snakeList = Arrays.stream(params.getTransferSnakes()).map(Converters::from).collect(Collectors.toList());
             Platform.runLater(() -> {
                 gameField.drawSnakes(snakeList);
             });
-            List<Fruit> fruits = Arrays.stream(params.getFruits()).map(Converters::from).collect(Collectors.toList());
+            List<Fruit> fruits = Arrays.stream(params.getTransferFruits()).map(Converters::from).collect(Collectors.toList());
             Platform.runLater(() -> {
                 gameField.drawFruits(fruits);
             });
