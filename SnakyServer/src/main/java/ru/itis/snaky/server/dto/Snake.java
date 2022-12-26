@@ -8,6 +8,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Snake {
 
     private List<Integer[]> bodyCoordinates;
