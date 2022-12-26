@@ -28,6 +28,8 @@ public abstract class AbstractServerEventListener implements ServerEventListener
                 return new PlayerChosenRoomListener();
             case START:
                 return new PlayerStartGameListener();
+            case DIRECTION:
+                return new PlayerChangeDirectionListener();
             case EXIT:
                 return new PlayerExitListener();
             default:
