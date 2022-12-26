@@ -7,11 +7,18 @@ import lombok.ToString;
 import ru.itis.snaky.protocol.dto.TransferFruit;
 import ru.itis.snaky.protocol.dto.TransferSnake;
 
+import java.util.List;
+
 @Getter
 @ToString
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class RoomConditionParams extends MessageParams {
-    private TransferSnake[] snakes;
-    private TransferFruit[] fruits;
+    private TransferSnake[] transferSnakes;
+    private TransferFruit[] transferFruits;
+
+    public RoomConditionParams(List<TransferSnake> transferSnakes, List<TransferFruit> transferFruits) {
+        this.transferSnakes = transferSnakes.toArray(TransferSnake[]::new);
+        this.transferFruits = transferFruits.toArray(TransferFruit[]::new);
+    }
 }

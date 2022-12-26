@@ -1,5 +1,6 @@
 package ru.itis.snaky.server.game;
 
+import ru.itis.snaky.protocol.dto.TransferColor;
 import ru.itis.snaky.protocol.dto.TransferFruit;
 import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.dto.TransferSnake;
@@ -59,7 +60,14 @@ public class RoomCondition extends Thread {
     public void sendCondition() {
         for (Connection connection : this.server.getConnections()) {
             if (connection.getRoom().getName().equals(room.getName())) {
-                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(snakes.stream().map(SnakeConverter::from).toArray(TransferSnake[]::new), new TransferFruit[]{})));
+                TransferSnake[] snakes = new TransferSnake[]{
+                        new TransferSnake(new TransferSnake.Cube[]{new TransferSnake.Cube(5,5), new TransferSnake.Cube(6, 6)}, "snake", new TransferColor(100, 150, 200), "UP")
+                };
+                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(
+                        snakes,
+                        new TransferFruit[0]
+                )));
+//                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(snakes.stream().map(SnakeConverter::from).toArray(TransferSnake[]::new), new TransferFruit[]{})));
             }
         }
     }

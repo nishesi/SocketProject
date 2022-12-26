@@ -10,5 +10,4 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CloseParams extends MessageParams {
-
 }

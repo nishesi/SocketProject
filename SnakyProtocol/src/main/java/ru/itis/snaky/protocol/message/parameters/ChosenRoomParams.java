@@ -11,6 +11,5 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class ChosenRoomParams extends MessageParams {
     private String chosenRoomName;
-
     private boolean success;
 }
