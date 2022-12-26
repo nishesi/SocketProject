@@ -4,7 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import lombok.Getter;
-import lombok.Setter;
+import ru.itis.snaky.client.dto.Fruit;
 import ru.itis.snaky.client.dto.Snake;
 import ru.itis.snaky.client.gui.canvas.BackgroundResizableCanvas;
 import ru.itis.snaky.client.gui.canvas.ForegroundResizableCanvas;
@@ -24,13 +24,11 @@ public class GameField extends Canvas {
     }
 
     public void drawSnakes(List<Snake> snakeList) {
-        snakeList = List.of(
-                new Snake(new int[][]{{5, 7}, {6, 7}, {7, 7}}, "snake 1", Color.ALICEBLUE),
-                new Snake(new int[][]{{5, 3}, {6, 4}, {7, 5}}, "snake 1", Color.WHITESMOKE),
-                new Snake(new int[][]{{1, 1}, {1, 2}, {1, 3}}, "snake 1", Color.PALEGOLDENROD)
-        );
         canvas.drawSnakes(snakeList);
     }
 
+    public void drawFruits(List<Fruit> fruits) {
+        canvas.drawFruits(fruits);
+    }
 }
 

@@ -1,27 +1,34 @@
 package ru.itis.snaky.client.gui.controllers;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.Setter;
+import ru.itis.snaky.client.dto.Fruit;
+import ru.itis.snaky.client.dto.Snake;
+import ru.itis.snaky.client.dto.converters.Converters;
 import ru.itis.snaky.client.gui.Direction;
 import ru.itis.snaky.client.gui.GameField;
 import ru.itis.snaky.client.handlers.ControlHandler;
+import ru.itis.snaky.client.handlers.MessageHandler;
 import ru.itis.snaky.client.handlers.ResponseObserver;
 import ru.itis.snaky.protocol.message.MessageType;
+import ru.itis.snaky.protocol.message.parameters.RoomConditionParams;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameWindowController {
     private final GameField gameField;
@@ -29,7 +36,6 @@ public class GameWindowController {
     private final ControlHandler controlHandler;
 
     private EventHandler<? super KeyEvent> keyEventHandler;
-    private Timeline animationTimeline;
     @Setter
     private RoomsWindowController roomsWindowController;
     @FXML
@@ -97,20 +103,25 @@ public class GameWindowController {
 
         responseObserver.addHandler(MessageType.LOSING, message -> {
             gamePane.getScene().removeEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler);
+
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You loosed");
+                alert.show();
+            });
         });
     }
 
     private void initGameEnvironment() {
-
-        animationTimeline = new Timeline(new KeyFrame(
-                new Duration(1),
-                actionEvent -> gameField.drawSnakes(responseObserver.getSnakes())));
-
-        animationTimeline.setCycleCount(Animation.INDEFINITE);
-    }
-
-    public void startAnimation() {
-        animationTimeline.play();
+        responseObserver.addHandler(MessageType.ROOM_CONDITION, (MessageHandler<RoomConditionParams>) params -> {
+            List<Snake> snakeList = Arrays.stream(params.getSnakes()).map(Converters::from).collect(Collectors.toList());
+            Platform.runLater(() -> {
+                gameField.drawSnakes(snakeList);
+            });
+            List<Fruit> fruits = Arrays.stream(params.getFruits()).map(Converters::from).collect(Collectors.toList());
+            Platform.runLater(() -> {
+                gameField.drawFruits(fruits);
+            });
+        } );
     }
 
     public Pane getGamePane() {

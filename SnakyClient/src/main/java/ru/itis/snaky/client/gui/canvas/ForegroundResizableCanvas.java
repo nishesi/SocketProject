@@ -3,20 +3,28 @@ package ru.itis.snaky.client.gui.canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import ru.itis.snaky.client.dto.Fruit;
 import ru.itis.snaky.client.dto.Snake;
 
 import java.util.List;
 
 public class ForegroundResizableCanvas extends ResizableCanvas {
-    private List<Snake> snakeList;
     private final int cubesCount;
+    private List<Snake> snakeList;
+    private List<Fruit> fruitList;
+
     public ForegroundResizableCanvas(Pane container, int cubesCount) {
         super(container);
         this.cubesCount = cubesCount;
     }
 
-    public void drawSnakes(List<Snake> snakeList) {
-        this.snakeList = snakeList;
+    public void drawSnakes(List<Snake> snakes) {
+        this.snakeList = snakes;
+        repaint();
+    }
+
+    public void drawFruits(List<Fruit> fruits) {
+        this.fruitList = fruits;
         repaint();
     }
 
@@ -26,6 +34,16 @@ public class ForegroundResizableCanvas extends ResizableCanvas {
         graphicsContext.clearRect(0, 0, getWidth(), getHeight());
 
         drawSnakes(graphicsContext);
+        drawFruits(graphicsContext);
+    }
+
+    private void drawFruits(GraphicsContext graphicsContext) {
+        if (fruitList == null) {
+            return;
+        }
+        for (Fruit fruit : fruitList) {
+            drawCube(fruit.getX(), fruit.getY(), graphicsContext);
+        }
     }
 
     private void drawSnakes(GraphicsContext graphicsContext) {
