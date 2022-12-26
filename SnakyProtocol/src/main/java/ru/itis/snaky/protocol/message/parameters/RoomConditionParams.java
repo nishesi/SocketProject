@@ -1,9 +1,6 @@
 package ru.itis.snaky.protocol.message.parameters;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import ru.itis.snaky.protocol.dto.TransferFruit;
 import ru.itis.snaky.protocol.dto.TransferSnake;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoomConditionParams extends MessageParams {
     private TransferSnake[] transferSnakes;
     private TransferFruit[] transferFruits;

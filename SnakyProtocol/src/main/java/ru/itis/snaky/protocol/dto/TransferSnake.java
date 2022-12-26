@@ -6,6 +6,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor()
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TransferSnake {
 
     private Cube[] bodyCubes;
@@ -19,9 +20,10 @@ public class TransferSnake {
     @Getter
     @ToString
     @EqualsAndHashCode
-    @RequiredArgsConstructor
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Cube {
-        private final int x;
-        private final int y;
+        private int x;
+        private int y;
     }
 }

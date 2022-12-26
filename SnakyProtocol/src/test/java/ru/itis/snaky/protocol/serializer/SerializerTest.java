@@ -2,6 +2,7 @@ package ru.itis.snaky.protocol.serializer;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.junit.jupiter.api.Test;
 import ru.itis.snaky.protocol.dto.TransferColor;
@@ -15,6 +16,16 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SerializerTest {
+    @Test
+    public void testEmptyObject() {
+        EmptyObject emptyObject = new EmptyObject();
+        String s = new String();
+    }
+    @ToString
+    @EqualsAndHashCode
+    @AllArgsConstructor
+    static class EmptyObject {
+    }
     @Test
     public void serializeTest() {
         Random random = new Random();
@@ -162,6 +173,7 @@ class SerializerTest {
     @ToString
     @EqualsAndHashCode
     @AllArgsConstructor
+    @NoArgsConstructor
     static class Test2 {
         private short[] shorts;
     }
@@ -169,6 +181,7 @@ class SerializerTest {
     @ToString
     @EqualsAndHashCode
     @AllArgsConstructor
+    @NoArgsConstructor
     static class Test1 {
         private boolean aBoolean;
         private byte aByte;
@@ -182,6 +195,7 @@ class SerializerTest {
         @ToString
         @EqualsAndHashCode
         @AllArgsConstructor
+        @NoArgsConstructor
         static class NestedTest1 {
             private int i;
         }

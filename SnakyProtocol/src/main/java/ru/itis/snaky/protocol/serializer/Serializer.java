@@ -255,21 +255,16 @@ public class Serializer {
         if (tClass.isArray() || tClass.isPrimitive()) {
             throw new IllegalArgumentException("illegal type");
         }
-        Constructor<?>[] constructors = tClass.getConstructors();
-        Constructor<T> constr = (Constructor<T>) constructors[0];
-        List<Object> params = new ArrayList<>();
-        for (Class<?> pType : constr.getParameterTypes()) {
-            if (pType.equals(Boolean.TYPE)) {
-                params.add(false);
-            } else {
-                params.add((pType.isPrimitive()) ? (byte) 0 : null);
-            }
-        }
-
+        Constructor<T> emptyConstructor;
         try {
-            constr.setAccessible(true);
-            return constr.newInstance(params.toArray());
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            emptyConstructor = tClass.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new ProtocolSerializationException("serialization failed: " + tClass + " has not empty constructor");
+        }
+        try {
+            emptyConstructor.setAccessible(true);
+            return emptyConstructor.newInstance();
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new ProtocolSerializationException("serialization failed: can't create instance", e);
         }
     }

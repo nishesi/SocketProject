@@ -1,12 +1,11 @@
 package ru.itis.snaky.protocol.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TransferColor {
     private final short[] rgb = new short[3];
 
