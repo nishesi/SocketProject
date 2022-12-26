@@ -121,6 +121,16 @@ public class RoomCondition extends Thread {
             }
         }
 
+        for (Snake otherSnake : snakes) {
+            if (!otherSnake.equals(snake)) {
+                for (Integer[] cube : otherSnake.getBodyCoordinates()) {
+                    if (snake.getHead()[0] == cube[0] && snake.getHead()[1] == cube[1]) {
+                        return true;
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
