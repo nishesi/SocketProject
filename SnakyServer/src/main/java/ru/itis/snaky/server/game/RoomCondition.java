@@ -10,10 +10,7 @@ import ru.itis.snaky.protocol.message.parameters.LosingParams;
 import ru.itis.snaky.protocol.message.parameters.RoomConditionParams;
 import ru.itis.snaky.server.core.Connection;
 import ru.itis.snaky.server.core.Server;
-import ru.itis.snaky.server.dto.Color;
-import ru.itis.snaky.server.dto.Fruit;
-import ru.itis.snaky.server.dto.Room;
-import ru.itis.snaky.server.dto.Snake;
+import ru.itis.snaky.server.dto.*;
 import ru.itis.snaky.server.dto.converters.FruitConverter;
 import ru.itis.snaky.server.dto.converters.SnakeConverter;
 
@@ -64,7 +61,7 @@ public class RoomCondition extends Thread {
     public void updateSnakes() {
 
         for (Snake snake : snakes) {
-            if (snake.getHead()[0] == fruit.getX() && snake.getHead()[1] == fruit.getY()) {
+            if (snake.getHead().getX() == fruit.getX() && snake.getHead().getY() == fruit.getY()) {
                 snake.increase();
                 regenerateFruit();
             }
@@ -81,50 +78,51 @@ public class RoomCondition extends Thread {
     }
 
     public void addPlayer(Connection connection) {
-        List<Integer[]> startCoordinates = new ArrayList<>();
-        startCoordinates.add(new Integer[]{2, 0});
-        startCoordinates.add(new Integer[]{1, 0});
-        startCoordinates.add(new Integer[]{0, 0});
+        List<Cube> startCoordinates = new ArrayList<>();
+        startCoordinates.add(new Cube(2, 0));
+        startCoordinates.add(new Cube(1, 0));
+        startCoordinates.add(new Cube(0, 0));
         snakes.add(new Snake(startCoordinates, connection.getPlayerNickname(), new Color(123, 32, 33), "RIGHT"));
     }
 
     public void regenerateFruit() {
-        List<Integer[]> allCubes = new ArrayList<>();
+        List<Cube> allCubes = new ArrayList<>();
         for (int i = 0; i < room.getSize(); i++) {
             for (int j = 0; j < room.getSize(); j++) {
-                allCubes.add(new Integer[]{i, j});
+                allCubes.add(new Cube(i, j));
             }
         }
 
         for (Snake snake : snakes) {
-            for (Integer[] pos : snake.getBodyCoordinates()) {
-                allCubes.remove(pos);
+            for (Cube cube : snake.getBodyCoordinates()) {
+                allCubes.remove(cube);
             }
         }
+        System.out.println(allCubes.size());
 
         Random random = new Random();
         int index = random.nextInt(allCubes.size());
 
-        fruit = new Fruit(allCubes.get(index)[0], allCubes.get(index)[1], new Color(0, 255, 255));
+        fruit = new Fruit(allCubes.get(index).getX(), allCubes.get(index).getY(), new Color(0, 255, 255));
     }
 
     public boolean checkForLosing(Snake snake) {
-        Integer[] head = snake.getHead();
+        Cube head = snake.getHead();
 
-        if (head[0] < 0 || head[0] >= room.getSize() || head[1] < 0 || head[1] >= room.getSize()) {
+        if (head.getX() < 0 || head.getX() >= room.getSize() || head.getY() < 0 || head.getY() >= room.getSize()) {
             return true;
         }
 
         for (int i = 1; i < snake.getBodyCoordinates().size(); i++) {
-            if (head[0] == snake.getBodyCoordinates().get(i)[0] && head[1] == snake.getBodyCoordinates().get(i)[1]) {
+            if (head.getX() == snake.getBodyCoordinates().get(i).getX() && head.getY() == snake.getBodyCoordinates().get(i).getY()) {
                 return true;
             }
         }
 
         for (Snake otherSnake : snakes) {
             if (!otherSnake.equals(snake)) {
-                for (Integer[] cube : otherSnake.getBodyCoordinates()) {
-                    if (snake.getHead()[0] == cube[0] && snake.getHead()[1] == cube[1]) {
+                for (Cube cube : otherSnake.getBodyCoordinates()) {
+                    if (snake.getHead().getX() == cube.getX() && snake.getHead().getY() == cube.getY()) {
                         return true;
                     }
                 }
