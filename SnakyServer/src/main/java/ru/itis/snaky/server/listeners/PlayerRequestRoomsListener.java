@@ -9,8 +9,8 @@ import ru.itis.snaky.server.dto.converters.RoomConverter;
 
 import java.util.Arrays;
 
-public class ClientRequestRoomsListener extends AbstractServerEventListener {
-    public ClientRequestRoomsListener() {
+public class PlayerRequestRoomsListener extends AbstractServerEventListener {
+    public PlayerRequestRoomsListener() {
         super(MessageType.ROOMS_LIST.getValue());
     }
 
