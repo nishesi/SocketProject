@@ -45,6 +45,20 @@ public class Snake {
     }
 
     public void increase() {
-
+        Integer[] tailCube = bodyCoordinates.get(bodyCoordinates.size() - 1);
+        Integer[] preTailCube = bodyCoordinates.get(bodyCoordinates.size() - 2);
+        if (tailCube[1] == preTailCube[1]) {
+            if (tailCube[0] > preTailCube[0]) {
+                bodyCoordinates.add(new Integer[]{tailCube[0] + 1, tailCube[1]});
+            } else {
+                bodyCoordinates.add(new Integer[]{tailCube[0] - 1, tailCube[1]});
+            }
+        } else if (tailCube[0] == preTailCube[0]) {
+            if (tailCube[1] > preTailCube[1]) {
+                bodyCoordinates.add(new Integer[]{tailCube[0], tailCube[1] + 1});
+            } else {
+                bodyCoordinates.add(new Integer[]{tailCube[0], tailCube[1] - 1});
+            }
+        }
     }
 }
