@@ -1,6 +1,6 @@
 package ru.itis.snaky.server.game;
 
-import ru.itis.snaky.protocol.dto.TransferColor;
+import lombok.Getter;
 import ru.itis.snaky.protocol.dto.TransferFruit;
 import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.dto.TransferSnake;
@@ -10,8 +10,10 @@ import ru.itis.snaky.protocol.message.parameters.RoomConditionParams;
 import ru.itis.snaky.server.core.Connection;
 import ru.itis.snaky.server.core.Server;
 import ru.itis.snaky.server.dto.Color;
+import ru.itis.snaky.server.dto.Fruit;
 import ru.itis.snaky.server.dto.Room;
 import ru.itis.snaky.server.dto.Snake;
+import ru.itis.snaky.server.dto.converters.FruitConverter;
 import ru.itis.snaky.server.dto.converters.SnakeConverter;
 
 import java.util.ArrayList;
@@ -20,9 +22,10 @@ import java.util.List;
 
 public class RoomCondition extends Thread {
 
+    @Getter
     private List<Snake> snakes;
 
-    private TransferFruit fruitPosition;
+    private Fruit fruitPosition = new Fruit(5, 2, new Color(255, 255, 0));
 
     private Room room;
 
@@ -40,7 +43,7 @@ public class RoomCondition extends Thread {
             updateSnakes();
             sendCondition();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -59,15 +62,8 @@ public class RoomCondition extends Thread {
 
     public void sendCondition() {
         for (Connection connection : this.server.getConnections()) {
-            if (connection.getRoom().getName().equals(room.getName())) {
-                TransferSnake[] snakes = new TransferSnake[]{
-                        new TransferSnake(new TransferSnake.Cube[]{new TransferSnake.Cube(5,5), new TransferSnake.Cube(6, 6)}, "snake", new TransferColor(100, 150, 200), "UP")
-                };
-                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(
-                        snakes,
-                        new TransferFruit[0]
-                )));
-//                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(snakes.stream().map(SnakeConverter::from).toArray(TransferSnake[]::new), new TransferFruit[]{})));
+            if (connection.getRoom() != null && connection.getRoom().getName().equals(room.getName())) {
+                connection.getOutputStream().send(new Message<>(MessageType.ROOM_CONDITION, new RoomConditionParams(snakes.stream().map(SnakeConverter::from).toArray(TransferSnake[]::new), new TransferFruit[]{FruitConverter.from(fruitPosition)})));
             }
         }
     }

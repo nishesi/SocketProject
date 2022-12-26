@@ -14,5 +14,6 @@ public class Room {
     private int playersCount;
     private int capacity;
     private Color[] colorsArray;
+    @Setter
     private RoomCondition condition;
 }
