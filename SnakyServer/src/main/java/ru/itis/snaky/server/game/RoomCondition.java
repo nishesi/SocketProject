@@ -6,6 +6,7 @@ import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.dto.TransferSnake;
 import ru.itis.snaky.protocol.message.Message;
 import ru.itis.snaky.protocol.message.MessageType;
+import ru.itis.snaky.protocol.message.parameters.LosingParams;
 import ru.itis.snaky.protocol.message.parameters.RoomConditionParams;
 import ru.itis.snaky.server.core.Connection;
 import ru.itis.snaky.server.core.Server;
@@ -42,10 +43,18 @@ public class RoomCondition extends Thread {
     public void run() {
         regenerateFruit();
         while (true) {
+            List<Snake> toRemove = new ArrayList<>();
+            for (Snake snake : snakes) {
+                if (checkForLosing(snake)) {
+                    toRemove.add(snake);
+                    sendLosingMessage(snake);
+                }
+            }
+            snakes.removeAll(toRemove);
             updateSnakes();
             sendCondition();
             try {
-                Thread.sleep(500);
+                Thread.sleep(250);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -97,5 +106,30 @@ public class RoomCondition extends Thread {
         int index = random.nextInt(allCubes.size());
 
         fruit = new Fruit(allCubes.get(index)[0], allCubes.get(index)[1], new Color(0, 255, 255));
+    }
+
+    public boolean checkForLosing(Snake snake) {
+        Integer[] head = snake.getHead();
+
+        if (head[0] < 0 || head[0] >= room.getSize() || head[1] < 0 || head[1] >= room.getSize()) {
+            return true;
+        }
+
+        for (int i = 1; i < snake.getBodyCoordinates().size(); i++) {
+            if (head[0] == snake.getBodyCoordinates().get(i)[0] && head[1] == snake.getBodyCoordinates().get(i)[1]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void sendLosingMessage(Snake snake) {
+        for (Connection player : server.getConnections()) {
+            if (snake.getSnakeName().equals(player.getPlayerNickname())) {
+                player.getOutputStream().send(new Message<>(MessageType.LOSING, new LosingParams()));
+                break;
+            }
+        }
     }
 }
