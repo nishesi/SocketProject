@@ -129,6 +129,7 @@ public class GameWindowController {
 
     @FXML
     public void toRooms() {
+        controlHandler.leaveRoom();
         controlHandler.requestRooms();
         roomsWindowController.updateRooms();
 

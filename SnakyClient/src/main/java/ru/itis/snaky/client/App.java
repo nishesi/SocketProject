@@ -79,6 +79,7 @@ public class App extends Application {
 
     @Override
     public void stop() {
+        controlHandler.sendCloseMessage();
         connection.close();
     }
 }

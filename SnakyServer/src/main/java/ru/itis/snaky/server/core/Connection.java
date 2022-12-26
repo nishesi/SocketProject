@@ -52,6 +52,7 @@ public class Connection extends Thread {
     public void run() {
         while (true) {
             Message<?> message = inputStream.getMessage();
+            System.out.println(message);
             ServerEventListener listener = AbstractServerEventListener.get(message.getMessageType());
             listener.init(this.server);
             listener.handle(this, message);
