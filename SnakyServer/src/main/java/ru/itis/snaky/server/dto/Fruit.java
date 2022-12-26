@@ -1,0 +1,16 @@
+package ru.itis.snaky.server.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+public class Fruit {
+    private int x;
+    private int y;
+    private Color color;
+}

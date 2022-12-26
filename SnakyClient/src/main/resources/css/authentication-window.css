@@ -1,0 +1,16 @@
+#form {
+    -fx-alignment: center;
+    -fx-pref-height: 200;
+    -fx-pref-width: 250;
+    -fx-padding: 10;
+    -fx-spacing: 30;
+}
+
+#nickname-label {
+    -fx-text-fill: white;
+    -fx-font-size: 20;
+}
+
+#nickname-field {
+    -fx-max-width: 200;
+}

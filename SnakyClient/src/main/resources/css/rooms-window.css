@@ -1,0 +1,10 @@
+#rooms-list {
+    -fx-background-color: #5D9400;
+    -fx-max-width: 700;
+    -fx-max-height: 700;
+}
+
+#right-bar {
+    -fx-spacing: 10;
+    -fx-alignment: top-right;
+}

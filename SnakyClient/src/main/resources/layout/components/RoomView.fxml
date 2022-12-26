@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import java.net.URL?>
+<AnchorPane id="box" fx:id="box" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+    <Label styleClass="room-inf" fx:id="name" AnchorPane.leftAnchor="10.0"/>
+    <Label styleClass="room-inf" fx:id="playersCount" AnchorPane.rightAnchor="10.0"/>
+    <stylesheets>
+        <URL value="@../../css/components/Room.css"/>
+    </stylesheets>
+</AnchorPane>
