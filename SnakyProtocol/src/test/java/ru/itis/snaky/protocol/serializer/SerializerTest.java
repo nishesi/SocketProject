@@ -9,6 +9,7 @@ import ru.itis.snaky.protocol.dto.TransferColor;
 import ru.itis.snaky.protocol.dto.TransferFruit;
 import ru.itis.snaky.protocol.dto.TransferRoom;
 import ru.itis.snaky.protocol.dto.TransferSnake;
+import ru.itis.snaky.protocol.message.parameters.RoomsListParams;
 
 import java.util.Random;
 import java.util.UUID;
@@ -17,21 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SerializerTest {
     @Test
-    public void testEmptyObject() {
-        EmptyObject emptyObject = new EmptyObject();
-        String s = new String();
-    }
-    @ToString
-    @EqualsAndHashCode
-    @AllArgsConstructor
-    static class EmptyObject {
-    }
-    @Test
     public void serializeTest() {
         Random random = new Random();
         for (int i = 0; i < 100; i++) {
 
-            Test1.NestedTest1[] nestedTest1s = new Test1.NestedTest1[random.nextInt(20000)];
+            Test1.NestedTest1[] nestedTest1s = new Test1.NestedTest1[random.nextInt(200)];
 
             for (int j = 0; j < nestedTest1s.length; j++) {
                 nestedTest1s[j] = new Test1.NestedTest1(random.nextInt());
@@ -87,6 +78,19 @@ class SerializerTest {
         Test2 test2 = new Test2(shorts);
         assertEquals(test2, Serializer.deserialize(Serializer.serialize(test2), Test2.class));
         System.out.println(test2);
+    }
+
+    @Test
+    public void testMessageParams() {
+        Random random = new Random();
+        TransferRoom[] transferRooms = new TransferRoom[random.nextInt(200)];
+        for (int i = 0; i < transferRooms.length; i++) {
+            transferRooms[i] = generateTransferRoom(random);
+        }
+        RoomsListParams roomsListParams = new RoomsListParams(transferRooms);
+        byte[] serialized = Serializer.serialize(roomsListParams);
+        RoomsListParams roomsListParams1 = Serializer.deserialize(serialized, RoomsListParams.class);
+        assertEquals(roomsListParams, roomsListParams1);
     }
 
     @Test
@@ -150,22 +154,27 @@ class SerializerTest {
 
     private void testTransferRoom() {
         Random random = new Random();
+
+        TransferRoom transferRoom = generateTransferRoom(random);
+
+        TransferRoom transferRoom1 = Serializer.deserialize(Serializer.serialize(transferRoom), TransferRoom.class);
+        assertEquals(transferRoom, transferRoom1);
+    }
+
+    private TransferRoom generateTransferRoom(Random random) {
         TransferColor[] colorArray = new TransferColor[random.nextInt(200)];
 
         for (int i = 0; i < colorArray.length; i++) {
             colorArray[i] = generateTransferColor(random);
         }
 
-        TransferRoom transferRoom = new TransferRoom(
+        return new TransferRoom(
                 random.nextInt(),
                 UUID.randomUUID().toString(),
                 random.nextInt(),
                 random.nextInt(),
                 colorArray
         );
-
-        TransferRoom transferRoom1 = Serializer.deserialize(Serializer.serialize(transferRoom), TransferRoom.class);
-        assertEquals(transferRoom, transferRoom1);
     }
 
     // testing classes
