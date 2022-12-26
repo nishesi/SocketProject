@@ -1,9 +1,6 @@
 package ru.itis.snaky.server.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -21,7 +18,7 @@ public class Snake {
 
     public void move() {
 
-        for (int i = bodyCoordinates.size() - 1; i <= 0; i--) {
+        for (int i = bodyCoordinates.size() - 1; i >= 0; i--) {
             if (i == 0) {
                 switch (direction) {
                     case "UP":
