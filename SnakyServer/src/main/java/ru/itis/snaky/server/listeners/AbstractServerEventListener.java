@@ -23,7 +23,7 @@ public abstract class AbstractServerEventListener implements ServerEventListener
             case AUTHORIZATION:
                 return new PlayerAuthorizationListener();
             case ROOMS_LIST:
-                return new ClientRequestRoomsListener();
+                return new PlayerRequestRoomsListener();
             case CHOSEN_ROOM:
                 return new PlayerChosenRoomListener();
             case START:
@@ -32,6 +32,8 @@ public abstract class AbstractServerEventListener implements ServerEventListener
                 return new PlayerChangeDirectionListener();
             case EXIT:
                 return new PlayerExitListener();
+            case CLOSE:
+                return new PlayerCloseGameListener();
             default:
                 throw new ProtocolIllegalMessageTypeException("Illegal message type");
         }
