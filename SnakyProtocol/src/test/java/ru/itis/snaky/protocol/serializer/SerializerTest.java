@@ -129,7 +129,8 @@ class SerializerTest {
         TransferSnake transferSnake = new TransferSnake(
                 cubes,
                 UUID.randomUUID().toString(),
-                generateTransferColor(random)
+                generateTransferColor(random),
+                UUID.randomUUID().toString()
         );
 
         TransferSnake transferSnake1 = Serializer.deserialize(Serializer.serialize(transferSnake), TransferSnake.class);
